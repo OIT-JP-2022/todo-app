@@ -9,20 +9,12 @@
 
 using ListItem = std::pair<std::string,bool>;
 
-std::string filename;
-
-std::vector<ListItem> list;
-
-const std::string bar = "===================================================";
-
-void printItems() {
+void printItems(std::vector<ListItem> todos, std::string bar) {
   int i = 1;
-
-  system("clear");
 
   std::cout << bar << "\n\n";
 
-  for (auto item : list) {
+  for (auto item : todos) {
     item.second == false ? std::cout << "\t[-] " : std::cout << "\t[+] ";
     std::cout << i++ << ". " << item.first << "\n";
   }
@@ -42,7 +34,7 @@ int inputMessage(std::string msg, int upper) {
   return n;
 }
 
-int printMenu() {
+int printMenu(std::string bar) {
   std::cout << "\t1. Add\n"
 
   << "\t2. Mark Complete\n"
@@ -58,24 +50,24 @@ int printMenu() {
   return inputMessage("Enter Choice: ", 5);
 }
 
-void loadTodos() {
+void loadTodos(std::vector<ListItem> todos, std::string filename) {
   std::fstream file;
   file.open(filename, std::fstream::in);
 
   std::string msg;
 
   while (getline(file, msg)) {
-    list.push_back(std::make_pair(msg.substr(2, msg.find("\n")), (msg[0] == '1' ? true : false)));
+    todos.push_back(std::make_pair(msg.substr(2, msg.find("\n")), (msg[0] == '1' ? true : false)));
   }
 
   file.close();
 }
 
-void saveTodos() {
+void saveTodos(std::vector<ListItem> todos, std::string filename) {
   std::fstream file;
   file.open(filename, std::fstream::out);
 
-  for (auto item : list) {
+  for (auto item : todos) {
     file << (item.second == true ? "1 " : "0 ") << item.first << "\n";
   }
 
@@ -85,9 +77,9 @@ void saveTodos() {
 
 }
 
-int getItemNumber() { return inputMessage("Enter Item Number: ", list.size()); }
+int getItemNumber(std::vector<ListItem> todos) { return inputMessage("Enter Item Number: ", todos.size()); }
 
-void handleOption(int n) {
+void handleOption(int n, std::vector<ListItem> todos, std::string filename) {
   std::string message;
   int i = 0;
 
@@ -96,44 +88,48 @@ void handleOption(int n) {
       std::cout << "\nEnter Message: ";
       std::cin >> message;
       std::cout << "\n";
-      list.insert(list.begin(),std::make_pair(message,false));
+      todos.insert(todos.begin(),std::make_pair(message,false));
       break;
 
     case 2:
-      i = getItemNumber();
-      list.push_back(std::make_pair(list.at(i-1).first,true));
-      list.erase(list.begin() + i-1);
+      i = getItemNumber(todos);
+      todos.push_back(std::make_pair(todos.at(i-1).first,true));
+      todos.erase(todos.begin() + i-1);
       break;
 	  
     case 3:
-      i = getItemNumber();
-      list.insert(list.begin(), std::make_pair(list.at(i-1).first, false));
-      list.erase(list.begin() + i);
+      i = getItemNumber(todos);
+      todos.insert(todos.begin(), std::make_pair(todos.at(i-1).first, false));
+      todos.erase(todos.begin() + i);
       break;
 	  
     case 4:
-      i = getItemNumber();
-      list.erase(list.begin() + i-1);
+      i = getItemNumber(todos);
+      todos.erase(todos.begin() + i-1);
       break;
 	  
     case 5:
-      saveTodos();
-      std::this_thread::sleep_for(std::chrono::milliseconds(3000));
+      saveTodos(todos, filename);
       break;
   }
 }
 
 int main(int argc, char** argv) {
-  filename = ( argc > 1 ? argv[1] : "default.txt" );
+  const std::string bar = "===================================================";
 
-  argc > 1 ? loadTodos() : (void)[]{};
+  std::vector<ListItem> todos;
+  std::string filename = ( argc > 1 ? argv[1] : "default.txt" );
+
+  argc > 1 ? loadTodos(todos, filename) : (void)[]{};
 
   int menuOption = 0;
 
   while (menuOption != -1) {
-    printItems();
+    printItems(todos, bar);
+    
+    menuOption = printMenu(bar);
 
-    menuOption = printMenu();
-
-    handleOption(menuOption);
+    handleOption(menuOption, todos, filename);
   }
+
+}
