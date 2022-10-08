@@ -1,0 +1,8 @@
+0 Do laundry
+0 CST Homework
+0 Renew Passport
+0 Apply to internships
+1 MATH Homework
+1 Buy cereal
+1 Buy toothpaste
+1 Finish Todo App
