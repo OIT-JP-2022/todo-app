@@ -1,8 +1,12 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
+#include <utility>
+
 using namespace std;
 std::ifstream inFILE;
+std::vector<std::pair<bool,string>> list
 
 bool mainmenu();
 void openFile(std::ifstream& inFILE, char** argv);
@@ -30,13 +34,15 @@ bool mainmenu() {
 	switch (menu) {
 	case 'e':
 	case 'E':
-		//stub call to new task
+		//create new vector item
 		waitThenClear();
 		return true;
 		break;
 	case 'v':
 	case 'V':
-		//call to view the list		
+		// display vector list	
+		// option to edit -> complete/uncomplete
+		// save vector to file
 		waitThenClear();
 		return true;
 		break;
@@ -75,7 +81,13 @@ void parseList(std::ifstream& inFILE) {
 	while (!inFILE.eof()) {
 		std::getline(inFILE, complete, '|');
 		std::getline(inFILE, task, '\n');
-		std::cout << "Complete = " << complete << " & task = " << task << "\n";
+		// save to pair in vector
 		//maybe do some sorting here?  who knows
 	}
 }
+
+// create save function
+// create delete function
+// edit completeness
+// sort by completeness
+// create add function
