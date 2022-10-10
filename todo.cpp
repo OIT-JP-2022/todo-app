@@ -5,10 +5,10 @@ std::ifstream inFILE;
 
 bool mainmenu();
 void openFile(std::ifstream& inFILE, char** argv);
+void waitThenClear();
 
 int main(int argc, char** argv) {
-	system("clear");
-	
+	system("clear");	
 	openFile(inFILE, argv);
 	while(mainmenu());
 }
@@ -27,15 +27,13 @@ bool mainmenu() {
 	case 'e':
 	case 'E':
 		//stub call to new task
-		system("pause");
-		system("clear");
+		waitThenClear();
 		return true;
 		break;
 	case 'v':
 	case 'V':
 		//call to view the list
-		system("pause");
-		system("clear");
+		waitThenClear();
 		return true;
 		break;
 	case 'q':
@@ -44,8 +42,7 @@ bool mainmenu() {
 		break;
 	default:
 		cout << " Menu item not understood, please try again.\n\n";
-		system("pause");
-		system("clear");
+		waitThenClear();
 		return true;
 		break;
 		}
@@ -57,10 +54,12 @@ void openFile(std::ifstream& inFILE, char** argv) {
 	if (!inFILE.is_open())	{
 		cout << " Sorry, there was an error opening your file! Please try again."
 			<< "\n\n";
-		cin.clear();
-		cin.get();
-		system("clear");
+		waitThenClear();
 	}
+	waitThenClear();
+}
+
+void waitThenClear(){
 	cin.clear();
 	cin.get();
 	system("clear");
