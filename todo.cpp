@@ -1,15 +1,19 @@
 #include <iostream>
 #include <fstream>
+#include <string>
 using namespace std;
 std::ifstream inFILE;
 
 bool mainmenu();
 void openFile(std::ifstream& inFILE, char** argv);
+void parseList(std::ifstream& inFILE);
 void waitThenClear();
 
 int main(int argc, char** argv) {
 	system("clear");	
 	openFile(inFILE, argv);
+	parseList(inFILE);
+	inFILE.close();
 	while(mainmenu());
 }
 
@@ -32,7 +36,7 @@ bool mainmenu() {
 		break;
 	case 'v':
 	case 'V':
-		//call to view the list
+		//call to view the list		
 		waitThenClear();
 		return true;
 		break;
@@ -55,7 +59,7 @@ void openFile(std::ifstream& inFILE, char** argv) {
 		cout << " Sorry, there was an error opening your file! Please try again."
 			<< "\n\n";
 		waitThenClear();
-	}
+	}	
 	waitThenClear();
 }
 
@@ -63,4 +67,15 @@ void waitThenClear(){
 	cin.clear();
 	cin.get();
 	system("clear");
+}
+
+void parseList(std::ifstream& inFILE) {
+	string task;
+	string complete;
+	while (!inFILE.eof()) {
+		std::getline(inFILE, complete, '|');
+		std::getline(inFILE, task, '\n');
+		std::cout << "Complete = " << complete << " & task = " << task << "\n";
+		//maybe do some sorting here?  who knows
+	}
 }
