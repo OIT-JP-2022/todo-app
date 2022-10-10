@@ -19,7 +19,8 @@ int main(int argc, char** argv) {
 
     std::vector<todo_Item> new_list;
 
-    // TODO: Menu a new to-do item
+    // TODO: 
+    // 1: Menu a new to-do item
     // 2: delete an item
     // 3: change status of item.
     // 4: exit (changes will be saved upon exit)
