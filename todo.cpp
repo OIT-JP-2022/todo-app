@@ -57,7 +57,8 @@ void loadTodos(std::vector<ListItem> todos, std::string filename) {
   std::string msg;
 
   while (getline(file, msg)) {
-    todos.push_back(std::make_pair(msg.substr(2, msg.find("\n")), (msg[0] == '1' ? true : false)));
+    std::cout << msg << std::endl;
+    todos.push_back({msg.substr(2, msg.find("\n")), (msg[0] == '1' ? true : false)});
   }
 
   file.close();
@@ -88,18 +89,18 @@ void handleOption(int n, std::vector<ListItem> todos, std::string filename) {
       std::cout << "\nEnter Message: ";
       std::cin >> message;
       std::cout << "\n";
-      todos.insert(todos.begin(),std::make_pair(message,false));
+      todos.insert(todos.begin(),{message,false});
       break;
 
     case 2:
       i = getItemNumber(todos);
-      todos.push_back(std::make_pair(todos.at(i-1).first,true));
+      todos.push_back({todos.at(i-1).first,true});
       todos.erase(todos.begin() + i-1);
       break;
 	  
     case 3:
       i = getItemNumber(todos);
-      todos.insert(todos.begin(), std::make_pair(todos.at(i-1).first, false));
+      todos.insert(todos.begin(), {todos.at(i-1).first, false});
       todos.erase(todos.begin() + i);
       break;
 	  
