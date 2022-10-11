@@ -7,7 +7,7 @@
 using ListItem = std::pair<std::string,bool>;
 
 void printItems(std::vector<ListItem> todos, std::string bar) {
-  int i = 1;
+  int i {1};
 
   std::cout << bar << "\n\n";
 
@@ -20,7 +20,7 @@ void printItems(std::vector<ListItem> todos, std::string bar) {
 }
 
 int prompt(std::string msg, int max) {
-  int n = 0;
+  int n {0};
 
   while ( (n > max || n < 1) && n != -1) {
     std::cout << msg << " ";
@@ -118,7 +118,7 @@ int main(int argc, char** argv) {
 
   argc > 1 ? loadTodos(todos, filename) : (void)[]{};
 
-  int menuOption = 0;
+  int menuOption {0};
 
   while (menuOption != -1) {
     printItems(todos, bar);
