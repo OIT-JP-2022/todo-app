@@ -6,11 +6,14 @@
 #include <iomanip>
 #include <vector>
 #include <sstream>
-#include <numeric>
+#include <limits>
 #include <cctype>
 
 using Item = std::pair<std::string, bool>;
 using List = std::vector<Item>;
+
+const char *CHECK_MARK = "\u2705";
+const char *CROSS = "\u274C";
 
 List ReadFile(std::string filename);
 void SaveFile(std::string filename, List &list);
@@ -25,8 +28,6 @@ void AddItem(List &list);
 void DeleteItem(List &list);
 bool ConfirmDecision();
 int SelectTask(List &list);
-
-
 
 int main(int argc, char *argv[]) {
     List list;
@@ -78,10 +79,11 @@ void SaveFile(std::string filename, List &list) {
 
 const void PrintList(const List &list) {
     int i = 1;
+    
     std::cout << '\n';
     for(const auto &item : list)
-        std::cout << std::boolalpha << std::setw(2) << " " << i++ << ". "
-                  << (item.second ? " ✔️  " : " ❌ ") << item.first << "\n";
+        std::cout << std::boolalpha << std::setw(2) << ' ' << i++ << ". "
+                  << (item.second ? CHECK_MARK : CROSS) << item.first << "\n";
 }
 
 const void PrintPrompt() {
