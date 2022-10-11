@@ -1,5 +1,7 @@
 # todo-app
 
+Created By: Ashlyn Funk-Tracy and Moe Ogunkeye
+
 A simple TUI todo app.
 
 To compile, run: `make todo`
