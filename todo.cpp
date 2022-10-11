@@ -54,7 +54,7 @@ void loadTodos(std::vector<ListItem> todos, std::string filename) {
 
   while (getline(file, msg)) {
     std::cout << msg << std::endl;
-    todos.push_back({msg.substr(2, msg.find("\n")), (msg[0] == '1' ? true : false)});
+    todos.push_back({msg.substr(2), (msg[0] == '1')});
   }
 }
 
