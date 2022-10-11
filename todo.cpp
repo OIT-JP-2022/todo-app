@@ -56,6 +56,7 @@ void display_menu(List& new_list, string filename){
                 return;
             default:
                 cout << "Invalid selection\n";
+                return;
         }
 
     } while (menuSelection != 5);
@@ -88,12 +89,5 @@ void open_file(List& tmp_list, std::string filename){
 }
 
 void save_file(List& tmp_list, std::string filename){
-    std::ofstream ofile(filename);
-
-    for (int i = 0; i < tmp_list.get_size(); i++){
-        ofile << (tmp_list[i]).get_itemID() << ": " << tmp_list[i].get_description() << " (" << tmp_list[i].print_status() << ")\n";
-    }
-    ofile << tmp_list;
-
-    ofile.close(); 
+    tmp_list.output_tofile(filename);
 }
