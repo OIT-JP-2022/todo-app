@@ -11,9 +11,9 @@ void printItems(std::vector<ListItem> todos, std::string bar) {
 
   std::cout << bar << "\n\n";
 
-  for (auto item : todos) {
-    item.second == false ? std::cout << "\t[-] " : std::cout << "\t[+] ";
-    std::cout << i++ << ". " << item.first << "\n";
+  for (const auto [text, isComplete] : todos) {
+    !isComplete ? std::cout << "\t[-] " : std::cout << "\t[+] ";
+    std::cout << i++ << ". " << text << "\n";
   }
 
   std::cout << "\n" << bar << "\n\n";
