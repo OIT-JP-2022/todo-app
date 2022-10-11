@@ -22,23 +22,23 @@ Notes:
  */
 
 	// TODO: Display todo list with menu at bottom:
-	// 	"1) Add item"
-	// 	"2) Delete item"
+	// 	"1) Add item" DONE
+	// 	"2) Delete item" DONE
 	// 	"3) Enter list item # to toggle status (done vs not)"
 	// 	"4) Sort list by complete vs not"
-	// 	"5) Exit"
+	// 	"5) Exit" DONE
 	//
 	// 	Functions:
-	// 	- Menu handler
+	// 	- Menu handler IN PROGRESS
 	// 	- Sort list
 	// 	- toggle item completeness (add or delete "[DONE]" from beginning of item)
-	// 	- Add list item
-	// 	- Delete list item
-	// 	- Display/refresh list on screen
+	// 	- Add list item DONE
+	// 	- Delete list item DONE
+	// 	- Display/refresh list on screen DONE
 	//
 	// 	Without functions:
-	// 	- Load from .txt file
-	// 	- Save to .txt file
+	// 	- Load from .txt file DONE
+	// 	- Save to .txt file DONE
 
 
 #include <iostream>
@@ -50,101 +50,188 @@ Notes:
 
 using std::string;
 using std::cout;
+using std::cin;
+using std::vector;
+
 
 // Main menu function
-std::vector<string> MainMenu(std::vector<string> vect);  
+void MainMenu(vector<string>& todoList,std::filesystem::path& savePath);
 
-// Add item function
-std::vector<string> AddItem(std::vector<string> vect);
+// Display todo list
+void displayList(vector<string>& todoList);
 
-// Delete item function
-std::vector<string> DeleteItem(std::vector<string> vect);
+// Add item function. Takes in vector reference, returns void.
+void AddItem(vector<string>& todoList);
 
-// Toggle item done or not function
-std::vector<string> ToggleItemStatus(std::vector<string> vect);
+// Delete item function. Takes in vector reference, returns void.
+void DeleteItem(vector<string>& todoList);
 
-// Sort item list by completeness function
-std::vector<string> SortList(std::vector<string> vect);
+// Toggle item done or not function. Takes in vector reference, returns void.
+void ToggleItemStatus(vector<string>& todoList);
 
-// Exit function
-std::vector<string> Exit(std::vector<string> vect);
+// Sort item list by completeness function. Takes in vector reference, returns void.
+void SortList(vector<string>& todoList);
+
+// Exit function. Takes in vector reference, returns void.
+void Exit(vector<string>& todoList);
+
+// Get path for save file
+std::filesystem::path getPath(string& saveFile);
+
+
+// MAIN =========================================================
 
 int main(int argc, char** argv) {
+
 	// Get save file name from command line argument.
 	if(argv != NULL){
 		string saveFile{argv[1]};
 		
-		// Get path to saveFile directory (assuming it is in the exe directory).
-		std::filesystem::path savePath{std::filesystem::canonical("/proc/self/exe")};
-		savePath.remove_filename();
-		savePath += saveFile;
+		// Get save file path
+		std::filesystem::path savePath = getPath(saveFile);
+		
 
-		// If a save file exists, open it.
+		// If a save file exists with given name, open it.
 		if(std::filesystem::exists(savePath)){
 			std::ifstream inFile; 
 			inFile.open(savePath);
 			
 			// Create vector, write to vector from file.
-			std::vector<string> vect;
-			std::string str;
+			vector<string> todoList;
+			string str;
 			while(std::getline(inFile, str)){
 				if(str.size() > 0)
-					vect.push_back(str);
+					todoList.push_back(str);
 			}		
 		        inFile.close();
 			 
 			// Call main menu
-			vect = MainMenu(vect);
+			MainMenu(todoList, savePath);
+		}
+		// No save file exists with given name.
+		else{
 
-			// Save back to file
-			std::ofstream outFile;
-			outFile.open(savePath);
-			for(int i=0; i<vect.size(); ++i){
-				outFile << vect[i] << std::endl;
-			}
-			outFile.close();
+			// Get save file path.
+			std::filesystem::path savePath = getPath(saveFile);
+
+			//Creat empty vector, call main menu.
+			vector<string> todoList;
+			MainMenu(todoList, savePath);
 		}
 	}
 	return 0;
 }
 
+
+// Function definitions ============================================
+
 // Main Menu	
-std::vector<string> MainMenu(std::vector<string> vect){
-	int choice;
+void MainMenu(vector<string>& todoList, std::filesystem::path& savePath){
+
+	int choice{0};
 	
-	// Main menu presented to user
-	std::cout << std::endl;
-	std::cout << "[1] Add Item" << std::endl;
-	std::cout << "[2] Delete Item" << std::endl;
-	std::cout << "[3] Enter List Item to Toggle Status" << std::endl;
-	std::cout << "[4] Sort List by Completeness" << std::endl;
-	std::cout << "[5] Exit" << std::endl;
-	std::cout << '\n' << "Enter Choice: ";
-	std::cin >> choice;
+	do{
+		// Main menu presented to user
+		cout << "\n";
+		cout << "[1] Add Item\n";
+		cout << "[2] Delete Item\n";
+		cout << "[3] Enter List Item to Toggle Status\n";
+		cout << "[4] Sort List by Completeness\n";
+		cout << "[5] Exit\n";
+		cout << "\n" << "Enter Choice: ";
+		cin >> choice;
 	
-	// Switch for menu selection
-	switch(choice){
-		case 1:
-			std::cout << "Add Item" << std::endl;
-			break;
-		case 2:
-			std::cout << "Delete Item" << std::endl;
-			break;
-		case 3:
-			std::cout << "Toggle Status" << std::endl;
-			break;
-		case 4:
-			std::cout << "Sort by Completeness" << std::endl;
-			break;
-		case 5:
-			std::cout << "Exit" << std::endl;
-			break;
-		default: 
-			std::cout << "Invalid Input" << std::endl;
+		// Switch for menu selection
+		switch(choice){
+			case 1:
+				cout << "Add Item\n";
+				AddItem(todoList);
+				break;
+			case 2:
+				cout << "Delete Item\n";
+				DeleteItem(todoList);
+				break;
+			case 3:
+				cout << "Toggle Status\n";
+				break;
+			case 4:
+				cout << "Sort by Completeness\n";
+				break;
+			case 5:
+				cout << "Exit\n";
+				break;
+			default: 
+				cout << "Invalid Input\n";
+		}
+	} while(choice != 5);
+
+	// Save back to file
+	std::ofstream outFile;
+	outFile.open(savePath);
+	for(int i=0; i<todoList.size(); ++i){
+		outFile << todoList[i] << "\n";
 	}
-	// Return the vector 
-	return vect;		
+	outFile.close();
 }
+
+// Display todo list
+void displayList(vector<string>& todoList){
+	
+	for(int i = 0; i < todoList.size(); i++){
+		cout << i+1 << ") " << todoList[i] << "\n";
+	}
+	cout << "\n";
+}
+
+// Add item
+void AddItem(vector<string>& todoList){
+	
+	char again = 'n';
+
+	// Take in new list item from user. Add to end of vector.
+	do{
+		string newItem;
+		cout << "Enter new todo item: ";
+		cin >> newItem;
+		todoList.push_back(newItem);
+		cout << "\nItem added!";
+		cout << "\nAdd another item? (y/n): ";
+		cin >> again;
+
+	} while(again == 'Y' || again == 'y');
+}
+
+// Delete item
+void DeleteItem(vector<string>& todoList){
+
+	int item{0};
+	char again = 'n';
+
+	// Display list, get user item choice to delete, delete that item from vector.
+	do{
+		displayList(todoList);
+		cout << "Enter item number to delete: ";
+		cin >> item;
+		todoList.erase(todoList.begin() + (item - 1));
+		displayList(todoList);
+		cout << "Delete another item? (y/n): ";
+		cin >> again;
+
+	} while(again == 'Y' || again == 'y');
+}
+
+// Get path for save file
+std::filesystem::path getPath(string& saveFile){
+
+	// Get path to saveFile directory (assuming it is in the exe directory).
+	std::filesystem::path savePath{std::filesystem::canonical("/proc/self/exe")};
+	savePath.remove_filename();
+	savePath += saveFile;
+
+	return savePath;
+
+}
+
 
 
 
