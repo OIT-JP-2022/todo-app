@@ -15,7 +15,7 @@ public:
     todo_Item() = default;
     ~todo_Item() = default;
     void set_description(std::string des) { description = des; }
-    void set_itemID() { item_id++; }
+    void set_itemID(int id) { item_id = id; }
     void print_item() { cout << item_id << ": " << description << " (" << print_status() << ")\n"; }
     string print_status();
     void change_status();

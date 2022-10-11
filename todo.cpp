@@ -89,14 +89,16 @@ void open_file(std::vector<todo_Item>& tmp_list, std::string filename){
         // open file, display file
         std::string line;
 
-        while(infile.good())
+        while(!infile.eof())
         {
-            infile >> line;
-            cout << line ;
-            //add_item(tmp_list, line);
+            infile.ignore(' ');
+            std::getline(infile, line);
+            //cout << line << '\n';
+            add_item(tmp_list, line);
+
         }
         std::cout << "file opened successfully. \n";
-        //print_list(tmp_list);
+        print_list(tmp_list);
     }
 
 }
@@ -105,7 +107,7 @@ void add_item(std::vector<todo_Item>& tmp_list, string des){
     todo_Item item;
     item.set_description(des);
     if (tmp_list.size() != 0){
-      item.set_itemID();
+      item.set_itemID(tmp_list.size() + 1);
     }
     tmp_list.push_back(item);
 }
@@ -119,7 +121,7 @@ void new_item(std::vector<todo_Item>& tmp_list){
     //TODO: make this into a member function if time   
     item.set_description(temp_des);
     if (tmp_list.size() != 0){
-      item.set_itemID();
+      item.set_itemID(tmp_list.size() + 1);
     }
     tmp_list.push_back(item);
     print_list(tmp_list);
@@ -136,6 +138,8 @@ void delete_item(std::vector<todo_Item>& tmp_list)
         tmp_list.erase(it - 1);
     else
         cout << "Invalid selection\n";
+    for(auto i = 0; i < tmp_list.size(); i++)
+        tmp_list[i].set_itemID(i + 1);
     print_list(tmp_list);
 }
 
