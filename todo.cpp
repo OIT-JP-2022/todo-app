@@ -6,7 +6,7 @@
 
 using namespace std;
 std::ifstream inFILE;
-std::vector<std::pair<bool,string>> list
+std::vector<std::pair<int,string>> listOfPairs;
 
 bool mainmenu();
 void openFile(std::ifstream& inFILE, char** argv);
@@ -81,8 +81,8 @@ void parseList(std::ifstream& inFILE) {
 	while (!inFILE.eof()) {
 		std::getline(inFILE, complete, '|');
 		std::getline(inFILE, task, '\n');
-		// save to pair in vector
-		//maybe do some sorting here?  who knows
+		int num = stoi(complete);
+		listOfPairs.emplace_back(num, task);
 	}
 }
 
