@@ -4,7 +4,10 @@ void new_item(std::vector<todo_Item>& tmp_list);
 void open_file(std::vector<todo_Item>& tmp_list, std::string filename);
 void print_list(std::vector<todo_Item> tmp_list);
 void delete_item(std::vector<todo_Item>& tmp_list);
-void add_item(std::vector<todo_Item>& tmp_list, string des);
+void save_file(std::vector<todo_Item>& tmp_list, std::string filename);
+void add_item(std::vector<todo_Item>& tmp_list, string& des);
+void change_status(std::vector<todo_Item>& tmp_list);
+void sort_list(std::vector<todo_Item>& tmp_list);
 
 int main(int argc, char** argv) {
     std::cout << "todo: make a todo app..." << '\n';
@@ -16,7 +19,6 @@ int main(int argc, char** argv) {
     }
 
     string filename = argv[1];
-    std::ofstream ofile;
     int menuSelection;
     std::vector<todo_Item> new_list;
 
@@ -34,7 +36,8 @@ int main(int argc, char** argv) {
         cout << "1: Add a new to-do item \n";
         cout << "2: delete an item \n";
         cout << "3: change status of item \n";
-        cout << "4: exit (changes will be saved upon exit) \n";
+        cout << "4: sort todo list \n";
+        cout << "5: exit (changes will be saved upon exit) \n";
         cin >> menuSelection;
 
         switch(menuSelection)
@@ -46,23 +49,20 @@ int main(int argc, char** argv) {
                 delete_item(new_list);
                 break;
             case 3:
-                {
-                int itemSelect;
-                cout << "Select item to change status: ";
-                cin >> itemSelect;
-                new_list[itemSelect - 1].change_status();
-                print_list(new_list);
-                }
+                change_status(new_list);
                 break;
             case 4:
+                sort_list(new_list);
+                break;
+            case 5:
+                save_file(new_list, filename);
                 return 0;
             default:
                 cout << "Invalid selection\n";
         }
 
-    } while (menuSelection != 4);
+    } while (menuSelection != 5);
     
-
     //after select 1
     new_item(new_list);
 
@@ -89,23 +89,24 @@ void open_file(std::vector<todo_Item>& tmp_list, std::string filename){
         // open file, display file
         std::string line;
 
-        while(infile.good())
+        while(!infile.eof())
         {
-            infile >> line;
-            cout << line ;
-            //add_item(tmp_list, line);
+            if(std::getline(infile, line)){
+                cout << line << '\n';
+                // add_item(tmp_list, line);
+            }
         }
         std::cout << "file opened successfully. \n";
-        //print_list(tmp_list);
+        print_list(tmp_list);
     }
 
 }
 
-void add_item(std::vector<todo_Item>& tmp_list, string des){
+void add_item(std::vector<todo_Item>& tmp_list, string& des){
     todo_Item item;
     item.set_description(des);
     if (tmp_list.size() != 0){
-      item.set_itemID();
+      item.set_itemID(tmp_list.size() + 1);
     }
     tmp_list.push_back(item);
 }
@@ -119,7 +120,7 @@ void new_item(std::vector<todo_Item>& tmp_list){
     //TODO: make this into a member function if time   
     item.set_description(temp_des);
     if (tmp_list.size() != 0){
-      item.set_itemID();
+      item.set_itemID(tmp_list.size() + 1);
     }
     tmp_list.push_back(item);
     print_list(tmp_list);
@@ -136,6 +137,25 @@ void delete_item(std::vector<todo_Item>& tmp_list)
         tmp_list.erase(it - 1);
     else
         cout << "Invalid selection\n";
+    for(auto i = 0; i < tmp_list.size(); i++)
+        tmp_list[i].set_itemID(i + 1);
+    print_list(tmp_list);
+}
+
+void save_file(std::vector<todo_Item>& tmp_list, std::string filename){
+    for (int i = 0; i < tmp_list.size(); i++){
+        std::ofstream ofile(filename);
+        ofile << tmp_list[i].get_description() << " " << tmp_list[i].print_status() << std::endl;;
+        ofile.close(); 
+    }
+
+}
+
+void change_status(std::vector<todo_Item>& tmp_list){
+    int itemSelect;
+    cout << "Select item to change status: ";
+    cin >> itemSelect;
+    tmp_list[itemSelect - 1].change_status();
     print_list(tmp_list);
 }
 
@@ -145,4 +165,20 @@ void print_list(std::vector<todo_Item> tmp_list){
     for(auto i: tmp_list)
         i.print_item();
     cout << "======================================\n\n";
+}
+
+void sort_list(std::vector<todo_Item>& tmp_list){
+    for (auto i = 0; i < tmp_list.size(); i++){
+        if(tmp_list[i].get_status() == true)
+        { 
+            tmp_list.push_back(tmp_list[i]);
+            tmp_list[i].change_status();
+            std::vector<todo_Item>::iterator it = tmp_list.begin() + i;
+            tmp_list.erase(it);
+        }
+        
+    }
+    for(auto i = 0; i < tmp_list.size(); i++)
+        tmp_list[i].set_itemID(i + 1);
+    print_list(tmp_list);
 }
