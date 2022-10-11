@@ -3,14 +3,11 @@
 
 #include <iostream>
 #include <fstream>
-
 #include <string>
 
 using std::string;
 using std::cout;
 using std::cin;
-
-enum Status{not_started = 1, in_progress, completed };
 
 class todo_Item{
 

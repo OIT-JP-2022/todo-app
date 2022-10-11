@@ -14,8 +14,6 @@ public:
     void change_status();
     void sort_list();
     void display_list(); 
-    int get_size();
-    todo_Item get_item(int index);
     void output_tofile(std::string filename);
     
 private:
@@ -55,7 +53,6 @@ void List::change_status(){
     tmp_list[itemSelect - 1].change_status();
     display_list();
 }
-int List::get_size() { return tmp_list.size(); }
 
 void List::sort_list(){
     for (auto i = 0; i < tmp_list.size(); i++){
