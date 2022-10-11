@@ -3,8 +3,9 @@
 #include <vector>
 #include <utility>
 #include <fstream>
+#include <array>
 
-using ListItem = std::pair<std::string,bool>;
+using ListItem = std::pair<std::string,bool>; 
 
 void printItems(std::vector<ListItem> todos, std::string bar) {
   int i {1};
@@ -31,18 +32,12 @@ int prompt(std::string msg, int max) {
   return n;
 }
 
-int printMenu(std::string bar) {
-  std::cout << "\t1. Add\n"
+int printMenu(std::array<std::string, 5> menuItems) {
+  for (const std::string & item : menuItems) {
+    std::cout << "\t" << item << "\n";
+  }
 
-  << "\t2. Mark Complete\n"
-
-  << "\t3. Mark Incomplete\n"
-
-  << "\t4. Delete\n"
-
-  << "\t5. Save\n\n"
-
-  << bar << "\n\n";
+  std::cout << "\n";
 
   return prompt("Enter Choice: ", 5);
 }
@@ -116,6 +111,14 @@ int main(int argc, char** argv) {
   std::vector<ListItem> todos;
   std::string filename = ( argc > 1 ? argv[1] : "default.txt" );
 
+  std::array<std::string, 5> menuOptions = {
+    "1. Add",
+    "2. Mark Complete",
+    "3. Mark Incomplete",
+    "4. Delete",
+    "5. Save"
+  };
+
   argc > 1 ? loadTodos(todos, filename) : (void)[]{};
 
   int menuOption {0};
@@ -123,7 +126,7 @@ int main(int argc, char** argv) {
   while (menuOption != -1) {
     printItems(todos, bar);
     
-    menuOption = printMenu(bar);
+    menuOption = printMenu(menuOptions);
 
     handleOption(menuOption, todos, filename);
   }
