@@ -13,29 +13,36 @@ using Item = std::pair<std::string, bool>;
 using List = std::vector<Item>;
 
 List ReadFile(std::string filename);
-std::string SaveFile(std::string filename);
+void SaveFile(std::string filename, List &list);
 const void PrintList(const List &list);
 const void PrintPrompt();
-void SelectMenuOption(List &list);
+bool SelectMenuOption(List &list);
 int GetUserInputInt();
 std::string GetUserInputStr(std::string prompt);
 void SortList(List &list);
-void ToggleItem(std::string task);
+void ToggleItem(List &list);
 void AddItem(List &list);
 void DeleteItem(List &list);
 bool ConfirmDecision();
+int SelectTask(List &list);
+
+
 
 int main(int argc, char *argv[]) {
-
+    List list;
+    bool continueLoop = true;
+    
     if(argc != 2)
         return -1;
 
-    List list = ReadFile(argv[1]);
-    
-    PrintPrompt();
-    SelectMenuOption(list);
+    list = ReadFile(argv[1]);
 
-    PrintList(list);
+    do {
+        PrintPrompt();
+        continueLoop = SelectMenuOption(list);
+        SaveFile(argv[1], list);
+        std::cout << "Saved list to \'" << argv[1] << "\'\n";
+    } while(continueLoop);
 }
 
 List ReadFile(std::string filename) {
@@ -56,10 +63,25 @@ List ReadFile(std::string filename) {
     return list;
 }
 
+void SaveFile(std::string filename, List &list) {
+    std::ofstream outfile;
+    outfile.open(filename);
+
+    if(outfile.bad())
+        return;
+    
+    for(const auto &item : list)
+        outfile << item.first << ',' << item.second << '\n';
+
+    outfile.close();
+}
+
 const void PrintList(const List &list) {
     int i = 1;
+    std::cout << '\n';
     for(const auto &item : list)
-        std::cout << std::boolalpha << i++ << ". " << item.first << ' ' << item.second << '\n';
+        std::cout << std::boolalpha << std::setw(2) << " " << i++ << ". "
+                  << (item.second ? " ✔️  " : " ❌ ") << item.first << "\n";
 }
 
 const void PrintPrompt() {
@@ -68,14 +90,15 @@ const void PrintPrompt() {
         "2. Delete task",
         "3. Toggle task completeness",
         "4. Sort list",
-        "5. Save list"
+        "5. Print list",
+        "6. Exit"
     };
 
     for(auto &option : menuOptions)
         std::cout << option << '\n';
 }
 
-void SelectMenuOption(List &list) {
+bool SelectMenuOption(List &list) {
     int optionNumber = GetUserInputInt();
 
     switch(optionNumber) {
@@ -89,21 +112,28 @@ void SelectMenuOption(List &list) {
     }
 
     case 3: {
+        ToggleItem(list);
         break;
     }
 
     case 4: {
+        SortList(list);
         break;
     }
-
     case 5: {
+        PrintList(list);
         break;
     }
-
+    case 6: {
+        return false;
+        break;
+    }
     default: {
+        std::cout << "Unknown option." << '\n';
         break;
     }
     }
+    return true;
 }
 
 int GetUserInputInt() {
@@ -140,12 +170,7 @@ void AddItem(List &list) {
 }
 
 void DeleteItem(List &list) {
-    int taskNum;
-    
-    do {
-        PrintList(list);
-        taskNum = GetUserInputInt();
-    } while(taskNum <= 0 or taskNum > list.size());
+    int taskNum = SelectTask(list);
 
     if(ConfirmDecision())
         list.erase(list.begin() + taskNum - 1);
@@ -155,4 +180,31 @@ bool ConfirmDecision() {
     std::string input = GetUserInputStr("Are you sure? [y/n]: ");
 
     return tolower(input[0]) == 'y';
+}
+
+void ToggleItem(List &list) {
+    int taskNum = SelectTask(list);
+
+    list.at(taskNum - 1).second = !(list.at(taskNum - 1).second);
+}
+
+int SelectTask(List &list) {
+    int taskNum;
+    
+    do {
+        PrintList(list);
+        taskNum = GetUserInputInt();
+    } while(taskNum <= 0 or taskNum > list.size());
+
+    return taskNum;
+}
+
+void SortList(List &list) {
+    std::sort(
+        list.begin(),
+        list.end(),
+        [](const Item &x, const Item &y) -> bool {
+            return x.second < y.second;
+        }
+    );
 }
