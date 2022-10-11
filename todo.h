@@ -14,6 +14,8 @@ class todo_Item{
 public:
     todo_Item() = default;
     ~todo_Item() = default;
+
+    //getters/setters
     void set_description(std::string des) { description = des; }
     string get_description() { return description; }
     void set_itemID(int id) { item_id = id; }
@@ -22,9 +24,6 @@ public:
     string print_status();
     void change_status();
     bool get_status() { return completed;}
-    
-
-    //getters/setters
 
 private:
     std::string description;
@@ -34,13 +33,10 @@ private:
 
 //
 string todo_Item::print_status(){
-    switch (completed){
-      case false: 
+    if (completed)
         return "not started";
-        break;
-      case true: return "completed";
-        break;
-    }
+    else
+      return "completed";   
 }
 
 void todo_Item::change_status(){

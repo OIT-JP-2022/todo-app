@@ -5,7 +5,7 @@ void open_file(std::vector<todo_Item>& tmp_list, std::string filename);
 void print_list(std::vector<todo_Item> tmp_list);
 void delete_item(std::vector<todo_Item>& tmp_list);
 void save_file(std::vector<todo_Item>& tmp_list, std::string filename);
-void add_item(std::vector<todo_Item>& tmp_list, string& des);
+void add_item(std::vector<todo_Item>& tmp_list, string des);
 void change_status(std::vector<todo_Item>& tmp_list);
 void sort_list(std::vector<todo_Item>& tmp_list);
 
@@ -91,9 +91,9 @@ void open_file(std::vector<todo_Item>& tmp_list, std::string filename){
 
         while(!infile.eof())
         {
-            if(std::getline(infile, line)){
+            if(getline(infile, line)){
                 cout << line << '\n';
-                // add_item(tmp_list, line);
+                add_item(tmp_list, line);
             }
         }
         std::cout << "file opened successfully. \n";
@@ -102,9 +102,10 @@ void open_file(std::vector<todo_Item>& tmp_list, std::string filename){
 
 }
 
-void add_item(std::vector<todo_Item>& tmp_list, string& des){
+void add_item(std::vector<todo_Item>& tmp_list, string des){
     todo_Item item;
-    item.set_description(des);
+    string description = des;
+    item.set_description(description);
     if (tmp_list.size() != 0){
       item.set_itemID(tmp_list.size() + 1);
     }
