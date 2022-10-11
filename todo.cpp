@@ -19,10 +19,10 @@ void printItems(std::vector<ListItem> todos, std::string bar) {
   std::cout << "\n" << bar << "\n\n";
 }
 
-int inputMessage(std::string msg, int upper) {
+int prompt(std::string msg, int max) {
   int n = 0;
 
-  while ( (n > upper || n < 1) && n != -1) {
+  while ( (n > max || n < 1) && n != -1) {
     std::cout << msg << " ";
     std::cin >> n;
     std::cout << "\n";
@@ -44,7 +44,7 @@ int printMenu(std::string bar) {
 
   << bar << "\n\n";
 
-  return inputMessage("Enter Choice: ", 5);
+  return prompt("Enter Choice: ", 5);
 }
 
 void loadTodos(std::vector<ListItem> todos, std::string filename) {
@@ -69,7 +69,7 @@ void saveTodos(std::vector<ListItem> todos, std::string filename) {
 
 }
 
-int getItemNumber(std::vector<ListItem> todos) { return inputMessage("Enter Item Number: ", todos.size()); }
+int getItemNumber(std::vector<ListItem> todos) { return prompt("Enter Item Number: ", todos.size()); }
 
 void handleOption(int n, std::vector<ListItem> todos, std::string filename) {
   std::string message;
