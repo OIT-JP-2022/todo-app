@@ -65,8 +65,8 @@ void saveTodos(std::vector<ListItem> todos, std::string filename) {
   std::fstream file;
   file.open(filename, std::fstream::out);
 
-  for (auto item : todos) {
-    file << (item.second == true ? "1 " : "0 ") << item.first << "\n";
+  for (const auto & [text, isComplete] : todos) {
+    file << (isComplete ? "1 " : "0 ") << text << "\n";
   }
 
   file.close();
@@ -135,3 +135,4 @@ int main(int argc, char** argv) {
   }
 
 }
+
