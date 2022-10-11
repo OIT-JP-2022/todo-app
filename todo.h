@@ -16,24 +16,32 @@ public:
     ~todo_Item() = default;
     void set_description(std::string des) { description = des; }
     void set_itemID() { item_id++; }
-    void print_item() { cout << item_id << ": " << description << " (" << m_status << ")\n"; }
-    void set_status(int status);
+    void print_item() { cout << item_id << ": " << description << " (" << print_status() << ")\n"; }
+    string print_status();
+    void change_status();
 
     //getters/setters
 
 private:
     std::string description;
-    std::string m_status = "not started";
+    bool completed = false;
     int item_id = 1;
 };
 
-void todo_Item::set_status(int status){
-    switch (status){
-      case 1: m_status = "not started";
+//
+string todo_Item::print_status(){
+    switch (completed){
+      case false: 
+        return "not started";
         break;
-      case 2: m_status = "in progress";
+      case true: return "completed";
         break;
-      case 3: m_status = "completed";
-        break;  
     }
+}
+
+void todo_Item::change_status(){
+  if(completed)
+    completed = false;
+  else
+    completed = true;
 }
