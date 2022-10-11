@@ -10,10 +10,11 @@
 using Item = std::pair<std::string, bool>;
 using List = std::vector<Item>;
 
-std::ifstream LoadFile(std::string filename);
 List ReadFile(std::string filename);
 std::string SaveFile(std::string filename);
 const void PrintList(const List &list);
+const void PrintPrompt();
+int GetUserInput();
 void SortList(List &list);
 void ToggleItem(std::string task);
 void AddItem(List &list);
@@ -25,15 +26,9 @@ int main(int argc, char *argv[]) {
         return -1;
 
     List list = ReadFile(argv[1]);
-    PrintList(list);
     
-}
-
-std::ifstream LoadFile(std::string filename) {
-    std::ifstream infile;
-    std::string line;
-    
-    return infile;
+    PrintPrompt();
+    int num = GetUserInput();
 }
 
 List ReadFile(std::string filename) {
@@ -55,7 +50,37 @@ List ReadFile(std::string filename) {
 }
 
 const void PrintList(const List &list) {
-    for(const auto &item : list) {
-        std::cout << std::boolalpha << item.first << ' ' << item.second << '\n';
-    }    
+    for(const auto &item : list)
+        std::cout << std::boolalpha << item.first << ' ' << item.second << '\n';    
+}
+
+const void PrintPrompt() {
+    std::vector<std::string> menuOptions {
+        "1. Add task",
+        "2. Delete task",
+        "3. Toggle task completeness",
+        "4. Sort list",
+        "5. Save list"
+    };
+
+    for(auto &option : menuOptions)
+        std::cout << option << '\n';
+}
+
+int GetUserInput() {
+    std::string input;
+    int num;
+
+    do {
+        std::cout << "Input: ";
+        std::cin >> input;
+        
+        try {
+            num = std::stoi(input);
+        } catch(...) {
+            num = -1;
+        }
+    } while(num <= 0);
+
+    return num;
 }
