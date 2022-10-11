@@ -66,7 +66,7 @@ void saveTodos(std::vector<ListItem> todos, std::string filename) {
 
 int getItemNumber(std::vector<ListItem> todos) { return prompt("Enter Item Number: ", todos.size()); }
 
-void handleOption(int n, std::vector<ListItem> todos, std::string filename) {
+void handleOption(int n, std::vector<ListItem> & todos, std::string filename) {
   std::string message;
 
   switch(n) {
@@ -109,24 +109,9 @@ int main(int argc, char** argv) {
   const std::string bar = "===================================================";
 
   std::vector<ListItem> todos;
-  std::string filename;
   int menuOption {0};
-  std::string input {argv[1]};
 
-  if ( argc > 1 ) {
-    if (input.substr(input.find(".")).compare(".txt")) {
-      filename = argv[1];
-    }
-
-    else {
-      std::cout << "\nInvalid file type\n";
-      filename = "default.txt";
-    }
-  }
-
-  else {
-    filename = "default.txt";  
-  }
+  std::string filename {argc > 1 ? argv[1] : "default.txt"};
 
   std::array<std::string, 5> menuOptions = {
     "1. Add",
