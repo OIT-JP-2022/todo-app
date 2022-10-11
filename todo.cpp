@@ -14,6 +14,24 @@ std::ifstream inFILE;
 std::ofstream outFILE;
 std::vector<std::pair<int,string>> listOfPairs;
 
+bool mainmenu(char** argv);
+void openFile(std::ifstream& inFILE, char** argv);
+void parseList(std::ifstream& inFILE);
+void waitThenClear();
+void addListPair();
+void saveListOfPairs(std::ofstream& outFILE, char** argv);
+void printListOfPairs();
+void sortListOfPairs();
+void editMenu();
+void toggle();
+void clrPrint();
+
+int main(int argc, char** argv) {
+	openFile(inFILE, argv);
+	parseList(inFILE);
+	inFILE.close();
+	while(mainmenu(argv));
+}
 
 bool mainmenu(char** argv) {
 	char menu;
@@ -166,24 +184,28 @@ void editMenu(){
 		cout << " (R)eturn to Main Menu\n\n -->";
 		cin >> response;
 		switch (response) {
-		case 't':
-		case 'T':
-			toggle();
-			sortListOfPairs();
-			clrPrint();
-			break;
-		case 'r':
-		case 'R':
-			loop = false;
-			break;
-		case 'd':
-		case 'D':
-			deleteTask();		
-			clrPrint();
-			break;
-		default:
-			cout << " Menu item not understood, please try again.\n\n";
-			break;
+			case 't':
+			case 'T':{
+				toggle();
+				sortListOfPairs();
+				clrPrint();
+				break;
+			}
+			case 'r':
+			case 'R':{
+				loop = false;
+				break;
+			}
+			case 'd':
+			case 'D':{
+				deleteTask();		
+				clrPrint();
+				break;
+			}
+			default:{
+				cout << " Menu item not understood, please try again.\n\n";
+				break;
+			}
 		}
 	}
 }
@@ -192,11 +214,4 @@ void clrPrint(){
 	system("clear");
 	cout << "\n ===Your ToDo list!===\n\n";
 	printListOfPairs();
-}
-
-int main(int argc, char** argv) {
-	openFile(inFILE, argv);
-	parseList(inFILE);
-	inFILE.close();
-	while(mainmenu(argv));
 }
