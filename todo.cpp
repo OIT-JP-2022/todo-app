@@ -1,11 +1,8 @@
 #include <iostream>
 #include <string>
-#include <stdlib.h>
 #include <vector>
 #include <utility>
 #include <fstream>
-#include <chrono>
-#include <thread>
 
 using ListItem = std::pair<std::string,bool>;
 
@@ -82,36 +79,40 @@ int getItemNumber(std::vector<ListItem> todos) { return inputMessage("Enter Item
 
 void handleOption(int n, std::vector<ListItem> todos, std::string filename) {
   std::string message;
-  int i = 0;
 
   switch(n) {
-    case 1:
-      std::cout << "\nEnter Message: ";
-      std::cin >> message;
-      std::cout << "\n";
-      todos.insert(todos.begin(),{message,false});
+    case 1: {
+        std::cout << "\nEnter Message: ";
+        std::cin >> message;
+        std::cout << "\n";
+        todos.insert(todos.begin(),{message,false});
       break;
+    }
 
-    case 2:
-      i = getItemNumber(todos);
-      todos.push_back({todos.at(i-1).first,true});
-      todos.erase(todos.begin() + i-1);
-      break;
+    case 2: {
+        int i {getItemNumber(todos)};
+        todos.push_back({todos.at(i-1).first,true});
+        todos.erase(todos.begin() + i-1);
+        break;
+    }
 	  
-    case 3:
-      i = getItemNumber(todos);
-      todos.insert(todos.begin(), {todos.at(i-1).first, false});
-      todos.erase(todos.begin() + i);
-      break;
+    case 3: {
+        int i {getItemNumber(todos)};
+        todos.insert(todos.begin(), {todos.at(i-1).first, false});
+        todos.erase(todos.begin() + i);
+        break;
+    }
 	  
-    case 4:
-      i = getItemNumber(todos);
-      todos.erase(todos.begin() + i-1);
-      break;
+    case 4: {
+        int i {getItemNumber(todos)};
+        todos.erase(todos.begin() + i-1);
+        break;
+    }
 	  
-    case 5:
-      saveTodos(todos, filename);
-      break;
+    case 5: {
+        saveTodos(todos, filename);
+        break;
+    }
   }
 }
 
