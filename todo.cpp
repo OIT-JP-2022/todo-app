@@ -14,24 +14,6 @@ std::ifstream inFILE;
 std::ofstream outFILE;
 std::vector<std::pair<int,string>> listOfPairs;
 
-bool mainmenu(char** argv);
-void openFile(std::ifstream& inFILE, char** argv);
-void parseList(std::ifstream& inFILE);
-void waitThenClear();
-void addListPair();
-void saveListOfPairs(std::ofstream& outFILE, char** argv);
-void printListOfPairs();
-void sortListOfPairs();
-void editMenu();
-void toggle();
-void clrPrint();
-
-int main(int argc, char** argv) {
-	openFile(inFILE, argv);
-	parseList(inFILE);
-	inFILE.close();
-	while(mainmenu(argv));
-}
 
 bool mainmenu(char** argv) {
 	char menu;
@@ -45,29 +27,33 @@ bool mainmenu(char** argv) {
 	cin >> menu;
 	cout << "\n";
 	switch (menu) {
-	case 'a':
-	case 'A':
-		addListPair();
-		return true;
-		break;
-	case 'e':
-	case 'E':
-		clrPrint();
-		editMenu();
-		return true;
-		break;
-	case 's':
-	case 'S':
-		saveListOfPairs(outFILE, argv);
-		cout << "\n Your file has been saved.  Have a nice day!\n\n\n\n";
-		sleep(3);
-		system("clear");
-		return false;
-		break;
-	default:
-		cout << " Menu item not understood, please try again.\n\n";
-		return true;
-		break;
+		case 'a':
+		case 'A':{
+			addListPair();
+			return true;
+			break;
+		}
+		case 'e':
+		case 'E':{
+			clrPrint();
+			editMenu();
+			return true;
+			break;
+		}
+		case 's':
+		case 'S':{
+			saveListOfPairs(outFILE, argv);
+			cout << "\n Your file has been saved.  Have a nice day!\n\n\n\n";
+			sleep(3);
+			system("clear");
+			return false;
+			break;
+		}
+		default:{
+			cout << " Menu item not understood, please try again.\n\n";
+			return true;
+			break;
+		}
 	}
 }
 
@@ -89,7 +75,7 @@ void parseList(std::ifstream& inFILE) {
 	while (!inFILE.eof()) {
 		char checkChar;
 		inFILE.get(checkChar);
-		if(checkChar != '1' || checkChar != '1')
+		if(checkChar != '1' || checkChar != '0')
 			break;
 		std::getline(inFILE, complete, '|');
 		std::getline(inFILE, task, '\n');
@@ -206,4 +192,11 @@ void clrPrint(){
 	system("clear");
 	cout << "\n ===Your ToDo list!===\n\n";
 	printListOfPairs();
+}
+
+int main(int argc, char** argv) {
+	openFile(inFILE, argv);
+	parseList(inFILE);
+	inFILE.close();
+	while(mainmenu(argv));
 }
