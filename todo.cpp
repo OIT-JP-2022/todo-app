@@ -48,28 +48,22 @@ int printMenu(std::string bar) {
 }
 
 void loadTodos(std::vector<ListItem> todos, std::string filename) {
-  std::fstream file;
-  file.open(filename, std::fstream::in);
-
+  std::ifstream file {filename};
+  
   std::string msg;
 
   while (getline(file, msg)) {
     std::cout << msg << std::endl;
     todos.push_back({msg.substr(2, msg.find("\n")), (msg[0] == '1' ? true : false)});
   }
-
-  file.close();
 }
 
 void saveTodos(std::vector<ListItem> todos, std::string filename) {
-  std::fstream file;
-  file.open(filename, std::fstream::out);
-
+  std::ofstream file {filename};
+  
   for (const auto & [text, isComplete] : todos) {
     file << (isComplete ? "1 " : "0 ") << text << "\n";
   }
-
-  file.close();
 
   std::cout << "\nFile Successfully Saved.\n";
 
