@@ -13,8 +13,8 @@ void printItems(std::vector<ListItem> todos, std::string bar) {
   std::cout << bar << "\n\n";
 
   for (const auto [text, isComplete] : todos) {
-    !isComplete ? std::cout << "\t[-] " : std::cout << "\t[+] ";
-    std::cout << i++ << ". " << text << "\n";
+    auto prefix{isComplete ? "\t[+] " : "\t[-] "};
+    std::cout << prefix << i++ << ". " << text << "\n";
   }
 
   std::cout << "\n" << bar << "\n\n";
