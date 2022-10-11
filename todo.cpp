@@ -1,9 +1,9 @@
 /*
 ============================================================
 	
-	--------------
-	Basic Todo App
-	--------------
+		--------------
+		Basic Todo App
+		--------------
 
 Code: 	Aaron Whitley
 	Joseph Ten Eyck
@@ -12,34 +12,14 @@ Notes:
 	- Todo list items are strings held in a vector.
 	- Vector items are read from a .txt file with
 	    carriage return seperating the items
-	    within the text. 
+	    within the file. 
 	    This happens upon application start.
-	- Vector items are written to the same .txt
+	- Vector items are overwritten to the same .txt
 	    file with the same formatting upon
 	    application close.
 
 ============================================================
  */
-
-	// TODO: Display todo list with menu at bottom:
-	// 	"1) Add item" DONE
-	// 	"2) Delete item" DONE
-	// 	"3) Enter list item # to toggle status (done vs not)"
-	// 	"4) Sort list by complete vs not"
-	// 	"5) Exit" DONE
-	//
-	// 	Functions:
-	// 	- Menu handler IN PROGRESS
-	// 	- Sort list
-	// 	- toggle item completeness (add or delete "[DONE]" from beginning of item)
-	// 	- Add list item DONE
-	// 	- Delete list item DONE
-	// 	- Display/refresh list on screen DONE
-	//
-	// 	Without functions:
-	// 	- Load from .txt file DONE
-	// 	- Save to .txt file DONE
-
 
 #include <iostream>
 #include <string>
@@ -47,6 +27,8 @@ Notes:
 #include <vector>
 #include <fstream>
 #include <iterator>
+#include <ios>
+#include <limits>
 
 
 using std::string;
@@ -72,9 +54,6 @@ void ToggleItemStatus(vector<string>& todoList);
 
 // Sort item list by completeness function. Takes in vector reference, returns void.
 void SortList(vector<string>& todoList);
-
-// Exit function. Takes in vector reference, returns void.
-void Exit(vector<string>& todoList);
 
 // Get path for save file
 std::filesystem::path getPath(string& saveFile);
@@ -132,6 +111,12 @@ void MainMenu(vector<string>& todoList, std::filesystem::path& savePath){
 	int choice{0};
 	
 	do{
+		DisplayList(todoList);
+
+		cout << "\n\t\t=============";
+		cout << "\n\t\t  Main Menu";
+		cout << "\n\t\t=============";
+
 		// Main menu presented to user
 		cout << "\n";
 		cout << "[1] Add Item\n";
@@ -139,7 +124,7 @@ void MainMenu(vector<string>& todoList, std::filesystem::path& savePath){
 		cout << "[3] Enter List Item to Toggle Status\n";
 		cout << "[4] Sort List by Completeness\n";
 		cout << "[5] Exit\n";
-		cout << "\n" << "Enter Choice: ";
+		cout << "\n" << "~ Enter menu choice #: ";
 		cin >> choice;
 	
 		// Switch for menu selection
@@ -161,10 +146,10 @@ void MainMenu(vector<string>& todoList, std::filesystem::path& savePath){
 				SortList(todoList);
 				break;
 			case 5:
-				cout << "Exit\n";
+				cout << "\n\n\t\t ~ Goodbye! ~\n\n";
 				break;
 			default: 
-				cout << "Invalid Input\n";
+				cout << "~ Invalid menu choice\n";
 		}
 	} while(choice != 5);
 
@@ -180,25 +165,41 @@ void MainMenu(vector<string>& todoList, std::filesystem::path& savePath){
 // Display todo list
 void DisplayList(vector<string>& todoList){
 	
-	for(int i = 0; i < todoList.size(); i++){
-		cout << i+1 << ") " << todoList[i] << "\n";
+	if(todoList.size() == 0){
+		cout << "\n\t--------------";
+		cout << "\n\t  Empty List";
+		cout << "\n\t--------------\n\n";
 	}
-	cout << "\n";
+	else{
+		cout << "\n\t-------------";
+		cout << "\n\t  Todo List";
+		cout << "\n\t-------------\n\n";
+
+
+		for(int i = 0; i < todoList.size(); i++){
+			cout << i+1 << ") " << todoList[i] << "\n";
+		}	
+		cout << "\n";
+	}
 }
 
 // Add item
 void AddItem(vector<string>& todoList){
-	
+
 	char again = 'n';
+
+	DisplayList(todoList);
 
 	// Take in new list item from user. Add to end of vector.
 	do{
 		string newItem;
-		cout << "Enter new todo item: ";
-		cin >> newItem;
+		cout << "~ Enter new todo item: ";
+		cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
+		std::getline(cin, newItem);
 		todoList.push_back(newItem);
-		cout << "\nItem added!";
-		cout << "\nAdd another item? (y/n): ";
+		DisplayList(todoList);
+		cout << "\n~ Item added!";
+		cout << "\n~ Add another item? (y/n): ";
 		cin >> again;
 
 	} while(again == 'Y' || again == 'y');
@@ -213,11 +214,11 @@ void DeleteItem(vector<string>& todoList){
 	// Display list, get user item choice to delete, delete that item from vector.
 	do{
 		DisplayList(todoList);
-		cout << "Enter item number to delete: ";
+		cout << "~ Enter item number to delete: ";
 		cin >> item;
 		todoList.erase(todoList.begin() + (item - 1));
 		DisplayList(todoList);
-		cout << "Delete another item? (y/n): ";
+		cout << "~ Delete another item? (y/n): ";
 		cin >> again;
 
 	} while(again == 'Y' || again == 'y');
@@ -225,6 +226,12 @@ void DeleteItem(vector<string>& todoList){
 
 // Sort list
 void SortList(vector<string>& todoList){
+
+
+	cout << "\n\t~~~~~~~~~~~~~~~";
+	cout << "\n\t  Sorted List";
+	cout << "\n\t~~~~~~~~~~~~~~~\n\n";
+
 	char ch = '[';
 	std::cout << '\n';
 	for(int i = 0; i < todoList.size(); i++){
@@ -237,19 +244,22 @@ void SortList(vector<string>& todoList){
 	}
 }
 
+// Toggle item status
 void ToggleItemStatus(vector<string>& todoList){
 	
 	int item;
 	char ch = '[';
 
 	DisplayList(todoList);
-	cout << "Enter item number to toggle status: ";
+	cout << "~ Enter item number to toggle completion status: ";
 	cin >> item;
         std::cout << todoList[item - 1] << '\n';	
 	if(todoList[item - 1].find(ch) != string::npos)
 		todoList[item - 1].erase(0,6);
 	else
 		todoList[item - 1] = "[DONE]" + todoList[item - 1];
+
+	DisplayList(todoList);
 }
 
 // Get path for save file
@@ -263,7 +273,3 @@ std::filesystem::path getPath(string& saveFile){
 	return savePath;
 
 }
-
-
-
-
