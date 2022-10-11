@@ -34,9 +34,9 @@ private:
 //
 string todo_Item::print_status(){
     if (completed)
-        return "not started";
+        return "completed";
     else
-      return "completed";   
+      return "not started";   
 }
 
 void todo_Item::change_status(){

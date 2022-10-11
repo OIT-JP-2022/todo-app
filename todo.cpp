@@ -88,12 +88,14 @@ void open_file(std::vector<todo_Item>& tmp_list, std::string filename){
     {
         // open file, display file
         std::string line;
+        std::string parsedLine;
 
         while(!infile.eof())
         {
             if(getline(infile, line)){
-                cout << line << '\n';
-                add_item(tmp_list, line);
+                parsedLine = line.substr(line.find(' ') + 1, line.find(" (") - 3); //start after first ' ' which is after number, end at (
+                //cout << parsedLine << '\n';
+                add_item(tmp_list, parsedLine);
             }
         }
         std::cout << "file opened successfully. \n";
@@ -144,12 +146,13 @@ void delete_item(std::vector<todo_Item>& tmp_list)
 }
 
 void save_file(std::vector<todo_Item>& tmp_list, std::string filename){
+    std::ofstream ofile(filename);
+
     for (int i = 0; i < tmp_list.size(); i++){
-        std::ofstream ofile(filename);
-        ofile << tmp_list[i].get_description() << " " << tmp_list[i].print_status() << std::endl;;
-        ofile.close(); 
+        ofile << tmp_list[i].get_itemID() << ": " << tmp_list[i].get_description() << " (" << tmp_list[i].print_status() << ")\n";
     }
 
+    ofile.close(); 
 }
 
 void change_status(std::vector<todo_Item>& tmp_list){
