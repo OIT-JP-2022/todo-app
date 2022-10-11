@@ -21,7 +21,7 @@ void printItems(std::vector<ListItem> todos, std::string bar) {
 }
 
 int prompt(std::string msg, int max) {
-  int n {0};
+  int n;
 
   while ( (n > max || n < 1) && n != -1) {
     std::cout << msg << " ";
@@ -111,7 +111,8 @@ int main(int argc, char** argv) {
   std::vector<ListItem> todos;
   std::string filename;
   int menuOption {0};
-  std::string input {argv[1]}; 
+  std::string input {argv[1]};
+
   if ( argc > 1 ) {
     if (input.substr(input.find(".")).compare(".txt")) {
       filename = argv[1];
