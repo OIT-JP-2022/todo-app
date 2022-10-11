@@ -66,13 +66,25 @@ int main(int argc, char** argv) {
 		savePath += saveFile;
 
 		// If a save file exists, open it.
-		if(std::filesystem::exists(savePath){
-			std::ifstream inFile;
+		if(std::filesystem::exists(savePath)){
+			std::ifstream inFile; 
 			inFile.open(savePath);
 			
 			// Create vector, write to vector from file.
+			std::vector<string> vect;
+			std::string str;
+			while(std::getline(inFile, str)){
+				if(str.size() > 0)
+					vect.push_back(str);
+			}		
+			// Close the file
+			inFile.close();
+		        
+			// Main Menu	
 
 		}
+		else
+			std::cout << "FILE NOT FOUND" << std::endl;
 	
 	}
 
