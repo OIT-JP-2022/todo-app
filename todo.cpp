@@ -87,6 +87,10 @@ void parseList(std::ifstream& inFILE) {
 	string task;
 	string complete;
 	while (!inFILE.eof()) {
+		char checkChar;
+		inFILE.get(checkChar);
+		if(checkChar != '1' || checkChar != '1')
+			break;
 		std::getline(inFILE, complete, '|');
 		std::getline(inFILE, task, '\n');
 		if(complete != ""){
