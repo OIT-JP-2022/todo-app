@@ -10,7 +10,7 @@
 using Item = std::pair<std::string, bool>;
 using List = std::vector<Item>;
 
-List ReadFile(std::string filename);
+List CreateListFromFile(std::string filename);
 void SaveFile(std::string filename, List &list);
 const void PrintList(const List &list);
 const void PrintPrompt();
@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) {
     } while(continueLoop);
 }
 
-List ReadFile(std::string filename) {
+List CreateListFromFile(std::string filename) {
     List list;
     std::string token;
     std::ifstream infile;
@@ -50,10 +50,13 @@ List ReadFile(std::string filename) {
     
     while(infile.peek() != EOF) {
         Item item;
+
         getline(infile, token, ',');
         item.first = token;
+        
         getline(infile, token);
         std::istringstream(token) >> item.second;
+        
         list.push_back(item);
     }
     return list;
@@ -77,7 +80,7 @@ const void PrintList(const List &list) {
     
     std::cout << '\n';
     for(const auto &item : list)
-        std::cout << std::boolalpha << std::setw(2) << ' ' << i++ << ". ["
+        std::cout << std::setw(2) << ' ' << i++ << ". ["
                   << (item.second ? 'X' : ' ') << "] " << item.first << "\n";
 }
 
