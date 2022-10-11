@@ -7,6 +7,7 @@
 #include <vector>
 #include <sstream>
 #include <numeric>
+#include <cctype>
 
 using Item = std::pair<std::string, bool>;
 using List = std::vector<Item>;
@@ -17,11 +18,12 @@ const void PrintList(const List &list);
 const void PrintPrompt();
 void SelectMenuOption(List &list);
 int GetUserInputInt();
-std::string GetUserInputStr();
+std::string GetUserInputStr(std::string prompt);
 void SortList(List &list);
 void ToggleItem(std::string task);
 void AddItem(List &list);
 void DeleteItem(List &list);
+bool ConfirmDecision();
 
 int main(int argc, char *argv[]) {
 
@@ -55,8 +57,9 @@ List ReadFile(std::string filename) {
 }
 
 const void PrintList(const List &list) {
+    int i = 1;
     for(const auto &item : list)
-        std::cout << std::boolalpha << item.first << ' ' << item.second << '\n';    
+        std::cout << std::boolalpha << i++ << ". " << item.first << ' ' << item.second << '\n';
 }
 
 const void PrintPrompt() {
@@ -81,6 +84,7 @@ void SelectMenuOption(List &list) {
         break;
     }
     case 2: {
+        DeleteItem(list);
         break;
     }
 
@@ -121,16 +125,34 @@ int GetUserInputInt() {
     return num;
 }
 
-std::string GetUserInputStr() {
+std::string GetUserInputStr(std::string prompt) {
     std::string input;
 
-    std::cout << "Input task name: ";
+    std::cout << prompt;
     getline(std::cin, input);
 
     return input;
 }
 
 void AddItem(List &list) {
-    std::string taskDescription = GetUserInputStr();
+    std::string taskDescription = GetUserInputStr("Enter task description: ");
     list.emplace_back(taskDescription, false);
+}
+
+void DeleteItem(List &list) {
+    int taskNum;
+    
+    do {
+        PrintList(list);
+        taskNum = GetUserInputInt();
+    } while(taskNum <= 0 or taskNum > list.size());
+
+    if(ConfirmDecision())
+        list.erase(list.begin() + taskNum - 1);
+}
+
+bool ConfirmDecision() {
+    std::string input = GetUserInputStr("Are you sure? [y/n]: ");
+
+    return tolower(input[0]) == 'y';
 }
