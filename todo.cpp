@@ -61,17 +61,21 @@ int main(int argc, char** argv) {
 		string saveFile{argv[1]};
 		
 		// Get path to saveFile directory (assuming it is in the exe directory).
-		std::filesystem::path exePath{std::filesystem::canonical("/proc/self/exe")};
-/*
+		std::filesystem::path savePath{std::filesystem::canonical("/proc/self/exe")};
+		savePath.remove_filename();
+		savePath += saveFile;
+
 		// If a save file exists, open it.
-		if(std::filesystem::exists(exePath/){
+		if(std::filesystem::exists(savePath){
 			std::ifstream inFile;
-			inFile.open();	
+			inFile.open(savePath);
+			
+			// Create vector, write to vector from file.
+
 		}
-*/		
+	
 	}
 
-	cout << "\n" << exePath << "\n";
 
 
 	return 0;
