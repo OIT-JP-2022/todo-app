@@ -90,21 +90,21 @@ void handleOption(int n, std::vector<ListItem> todos, std::string filename) {
     }
 
     case 2: {
-        int i {getItemNumber(todos)};
+        const auto i {getItemNumber(todos)};
         todos.push_back({todos.at(i-1).first,true});
         todos.erase(todos.begin() + i-1);
         break;
     }
 	  
     case 3: {
-        int i {getItemNumber(todos)};
+        const auto i {getItemNumber(todos)};
         todos.insert(todos.begin(), {todos.at(i-1).first, false});
         todos.erase(todos.begin() + i);
         break;
     }
 	  
     case 4: {
-        int i {getItemNumber(todos)};
+        const auto i {getItemNumber(todos)};
         todos.erase(todos.begin() + i-1);
         break;
     }
