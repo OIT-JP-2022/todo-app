@@ -5,9 +5,7 @@
 #include <string>
 #include <iomanip>
 #include <vector>
-#include <sstream>
 #include <limits>
-#include <cctype>
 
 using Item = std::pair<std::string, bool>;
 using List = std::vector<Item>;
@@ -39,7 +37,7 @@ int main(int argc, char *argv[]) {
         PrintPrompt();
         continueLoop = SelectMenuOption(list);
         SaveFile(argv[1], list);
-        std::cout << "Saved list to \'" << argv[1] << "\'\n";
+        std::cout << "\nSaved list to \'" << argv[1] << "\'\n";
     } while(continueLoop);
 }
 
@@ -128,7 +126,7 @@ bool SelectMenuOption(List &list) {
         break;
     }
     default: {
-        std::cout << "Unknown option." << '\n';
+        std::cout << "Unknown option.\n";
         break;
     }
     }
@@ -142,6 +140,7 @@ int GetUserInputInt() {
     do {
         std::cout << "Input option: ";
         std::cin >> input;
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         
         try {
             num = std::stoi(input);
@@ -150,7 +149,6 @@ int GetUserInputInt() {
         }
     } while(num <= 0);
 
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     return num;
 }
 
@@ -166,13 +164,16 @@ std::string GetUserInputStr(std::string prompt) {
 void AddItem(List &list) {
     std::string taskDescription = GetUserInputStr("Enter task description: ");
     list.emplace_back(taskDescription, false);
+    std::cout << "\nAdded task \"" << taskDescription << "\" to list\n";
 }
 
 void DeleteItem(List &list) {
     int taskNum = SelectTask(list);
-
-    if(ConfirmDecision())
+    
+    if(ConfirmDecision()) {
         list.erase(list.begin() + taskNum - 1);
+        std::cout << "\nDeleted task #" << taskNum << " from the list.\n";
+    }
 }
 
 bool ConfirmDecision() {
@@ -183,8 +184,10 @@ bool ConfirmDecision() {
 
 void ToggleItem(List &list) {
     int taskNum = SelectTask(list);
-
-    list.at(taskNum - 1).second = !(list.at(taskNum - 1).second);
+    Item *item = &list.at(taskNum - 1);
+    
+    item->second = !(item->second);
+    std::cout << "\nTask #" << taskNum << " is now marked as " << (item->second ? "" : "in") << "complete.\n";
 }
 
 int SelectTask(List &list) {
@@ -202,8 +205,7 @@ void SortList(List &list) {
     std::sort(
         list.begin(),
         list.end(),
-        [](const Item &x, const Item &y) -> bool {
-            return x.second < y.second;
-        }
+        [](const Item &x, const Item &y) -> bool { return x.second < y.second; }
     );
+    std::cout << "\nSorted the list based on completeness.\n";
 }
