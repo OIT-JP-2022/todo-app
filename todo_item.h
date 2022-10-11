@@ -17,8 +17,6 @@ class todo_Item{
 public:
     todo_Item() = default;
     ~todo_Item() = default;
-
-    //getters/setters
     void set_description(std::string des) { description = des; }
     string get_description() { return description; }
     void set_itemID(int id) { item_id = id; }
@@ -47,7 +45,5 @@ void todo_Item::change_status(){
   else
     completed = true;
 }
-
-
 
 #endif

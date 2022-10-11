@@ -16,24 +16,19 @@ public:
     void display_list(); 
     int get_size();
     todo_Item get_item(int index);
+    void output_tofile(std::string filename);
     
 private:
     std::vector<todo_Item> tmp_list;
 };
 
 void List::new_item(){
-    todo_Item item;
+
     string temp_des;
     cin.ignore();
     cout << "Enter a new item description: ";
     getline(cin, temp_des); 
-    //TODO: make this into a member function if time   
-    item.set_description(temp_des);
-    if (tmp_list.size() != 0){
-      item.set_itemID(tmp_list.size() + 1);
-    }
-    tmp_list.push_back(item);
-    system("clear");
+    add_item(temp_des);
     display_list();
 }
 
@@ -43,7 +38,7 @@ void List::delete_item()
     cout << "Which item do you want delete: ";
     cin >> itemNum;
     std::vector<todo_Item>::iterator it = tmp_list.begin() + itemNum; 
-    //TODO: check that number is in bounds
+
     if(itemNum > 0 && itemNum <= tmp_list.size())
         tmp_list.erase(it - 1);
     else
@@ -95,5 +90,12 @@ void List::display_list(){
     cout << "======================================\n\n";
 }
 
+void List::output_tofile(std::string filename){
+    std::ofstream ofile(filename);
+    for (int i = 0; i < tmp_list.size(); i++){
+        ofile << (tmp_list[i]).get_itemID() << ": " << tmp_list[i].get_description() << " (" << tmp_list[i].print_status() << ")\n";
+    }
+    ofile.close(); 
+}
 
 #endif
