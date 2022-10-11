@@ -12,9 +12,6 @@
 using Item = std::pair<std::string, bool>;
 using List = std::vector<Item>;
 
-const char *CHECK_MARK = "\u2705";
-const char *CROSS = "\u274C";
-
 List ReadFile(std::string filename);
 void SaveFile(std::string filename, List &list);
 const void PrintList(const List &list);
@@ -82,8 +79,8 @@ const void PrintList(const List &list) {
     
     std::cout << '\n';
     for(const auto &item : list)
-        std::cout << std::boolalpha << std::setw(2) << ' ' << i++ << ". "
-                  << (item.second ? CHECK_MARK : CROSS) << item.first << "\n";
+        std::cout << std::boolalpha << std::setw(2) << ' ' << i++ << ". ["
+                  << (item.second ? 'X' : ' ') << "] " << item.first << "\n";
 }
 
 const void PrintPrompt() {
