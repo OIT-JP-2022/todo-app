@@ -29,13 +29,6 @@ int main(int argc, char *argv[]) {
     
 }
 
-std::ifstream LoadFile(std::string filename) {
-    std::ifstream infile;
-    std::string line;
-    
-    return infile;
-}
-
 List ReadFile(std::string filename) {
     List list;
     std::string token;
@@ -55,7 +48,6 @@ List ReadFile(std::string filename) {
 }
 
 const void PrintList(const List &list) {
-    for(const auto &item : list) {
-        std::cout << std::boolalpha << item.first << ' ' << item.second << '\n';
-    }    
+    for(const auto &item : list)
+        std::cout << std::boolalpha << item.first << ' ' << item.second << '\n';    
 }
