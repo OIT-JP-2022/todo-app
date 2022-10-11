@@ -1,6 +1,9 @@
+#ifndef TODO_ITEM_H
+#define TODO_ITEM_H
+
 #include <iostream>
 #include <fstream>
-#include <vector>
+
 #include <string>
 
 using std::string;
@@ -31,7 +34,6 @@ private:
     int item_id = 1;
 };
 
-//
 string todo_Item::print_status(){
     if (completed)
         return "completed";
@@ -45,3 +47,7 @@ void todo_Item::change_status(){
   else
     completed = true;
 }
+
+
+
+#endif
