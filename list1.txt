@@ -1,0 +1,6 @@
+Start: Clean the house
+Completeness: 0
+Start: Walk the wheelbarrow
+Completeness: 2
+Start: Water the cat
+Completeness: 1
