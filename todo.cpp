@@ -1,18 +1,18 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
 
 using std::cout;
 using std::cin;
 using std::string;
 
 std::fstream openFile(const string& filename){
-    std::fstream File;
-    File.open(filename, std::ios_base::app | std::ios_base::in | std::ios_base::out);
-    if(!File){ //no file, make one
-      std::ofstream File(filename); //no file, make one
-    } 
-    return File;
+    std::fstream open_file;
+    open_file.open(filename, std::ios_base::app | std::ios_base::in | std::ios_base::out);
+    if(!open_file) std::ofstream File(filename); //no file, make one
+    if (open_file.fail()) throw "Open file failed."; // File doesn't open, error out
+    return open_file;
 } 
 
 char menu()
@@ -27,44 +27,44 @@ char menu()
     return std::tolower(choice);
 }
 
-void printList(const string& filename) 
+void printVector(const std::vector<string>& vector, const string& title = "-------ToDo List------\n") 
 {
-    std::fstream myFile = openFile(filename);
-    string text;
-    cout << "-------ToDo List------" << "\n";
-    if (myFile.is_open())
-    {
-        while (getline(myFile, text))
-        {
-            cout << text << "\n";
-        }
-    }else{
-      cout << "File not open";
-    }
+  cout << title;
+  for (int i = 0; i < vector.size(); ++i){
+    cout << (i+1) << ") " << vector[i] << "\n";
+  }
 }
 
 void enterItem(const string& filename)
 {
-    std::fstream myFile = openFile(filename);
-    if (myFile.is_open())
-    {
-      string item = "";
-      cout << "Enter item: ";
-      cin.ignore();
-      getline(cin, item);
-      myFile << "- [ ] " << item << "\n";
-    }else{
-      cout << "File not open";
-    } 
+  std::fstream myFile = openFile(filename);
+  string item = "";
+  cout << "Enter item: ";
+  cin.ignore();
+  getline(cin, item);
+  myFile << "- [ ] " << item << "\n";
+  myFile.close();
 }
 
+std::vector<string> getTasks(const string& filename){
+  std::fstream myFile = openFile(filename); 
+  std::vector<string> tasks;
+  string text;
+  while (getline(myFile, text))
+  {
+    tasks.push_back(text);
+  }
+  myFile.close();
+
+  return tasks;
+}
 
 int main(int argc, char *argv[]) {
   std::string filename = argc >= 2 ? argv[1] : "todo.txt"; // arg or defaul
 
   bool exit = false;
   do{
-    printList(filename);
+    printVector(getTasks(filename));
     switch(menu()){
       case 'a': enterItem(filename); break;
       case 'q': exit = true; break;
