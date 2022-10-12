@@ -4,168 +4,67 @@
 #include <vector>
 #include <utility>
 #include <algorithm>
-#include <unistd.h>
 
 using std::cout;
 using std::cin;
+using std::endl;
+using std::getline;
+using std::sort;
 using std::string;
+using std::ifstream;
+using std::ofstream;
+using std::vector;
+using std::pair;
 
-std::ifstream inFILE;
-std::ofstream outFILE;
-std::vector<std::pair<int,string>> listOfPairs;
+bool parseList(string filename, vector<pair<int, string>>& listOfPairs) {
+	string task{};
+	string buffer{};
+	string complete{};
+	ifstream inFILE(filename, std::ios::in);
+	bool returnCheck = true;
 
-bool mainmenu(char** argv);
-void openFile(std::ifstream& inFILE, char** argv);
-void parseList(std::ifstream& inFILE);
-void waitThenClear();
-void addListPair();
-void saveListOfPairs(std::ofstream& outFILE, char** argv);
-void printListOfPairs();
-void sortListOfPairs();
-void editMenu();
-void toggle();
-void clrPrint();
-
-int main(int argc, char** argv) {
-	openFile(inFILE, argv);
-	parseList(inFILE);
-	inFILE.close();
-	while(mainmenu(argv));
-}
-
-bool mainmenu(char** argv) {
-	char menu;
-	int num;
-	sortListOfPairs();
-	clrPrint();
-	cout << "\n Please choose from one of the following menu items\n";
-	cout << " (A)dd new Task\n";
-	cout << " (E)dit your List\n";
-	cout << " (S)ave and Quit\n\n -->";
-	cin >> menu;
-	cout << "\n";
-	switch (menu) {
-		case 'a':
-		case 'A':{
-			addListPair();
-			return true;
-			break;
-		}
-		case 'e':
-		case 'E':{
-			clrPrint();
-			editMenu();
-			return true;
-			break;
-		}
-		case 's':
-		case 'S':{
-			saveListOfPairs(outFILE, argv);
-			cout << "\n Your file has been saved.  Have a nice day!\n\n\n\n";
-			sleep(3);
-			system("clear");
-			return false;
-			break;
-		}
-		default:{
-			cout << " Menu item not understood, please try again.\n\n";
-			return true;
-			break;
-		}
-	}
-}
-
-void openFile(std::ifstream& inFILE, char** argv) {
-	inFILE.open(argv[1]);
-	system("clear");
-	cout << "\n You are opening \"" << argv[1] 
-	<< "\"\n This To-Do list will be imported...\n" << std::endl;
-	sleep(3);
-	if (!inFILE.is_open())	{
-		cout << " Sorry, there was an error opening your file! Please try again."
-			<< "\n\n";
-	}
-}
-
-void parseList(std::ifstream& inFILE) {
-	string task;
-	string complete;
-	while (!inFILE.eof()) {
-		char checkChar;
-		inFILE.get(checkChar);
-		if(checkChar != '1' || checkChar != '0')
-			break;
-		std::getline(inFILE, complete, '|');
-		std::getline(inFILE, task, '\n');
-		if(complete != ""){
+	if (inFILE.peek() == -1)
+		returnCheck = false;
+	else
+	{
+		while (inFILE.peek() != -1)
+		{
+			getline(inFILE, complete, '|');
+			getline(inFILE, task, '\n');
 			int num = stoi(complete);
 			listOfPairs.emplace_back(num, task);
 		}
-		else break;
+	}
+
+	return returnCheck;
+}
+void printListOfPairs(vector<pair<int, string>>& listOfPairs) {
+	int i{};
+	cout << "Incomplete: \n";
+	for (i = 0; listOfPairs.at(i).first == 0; i++)
+	{
+		cout << i + 1<< ". " << listOfPairs.at(i).second << '\n';
+	}
+
+	cout << "\nComplete: \n";
+	for (i = i; i < listOfPairs.size(); i++)
+	{
+		cout << i + 1 << ". " << listOfPairs.at(i).second << '\n';
 	}
 }
-
-void addListPair(){
-	string task;
-	clrPrint();
-	cout << "\n Please enter your task: \n -->";		
-	cin.ignore();
-	std::getline(cin, task);
-	listOfPairs.emplace_back(0, task);
-	cout << "\n Your task has been entered, thank you!\n";
-	sleep(2);
+void clrPrint(vector<pair<int, string>>& listOfPairs) {
+	cout << "\n ===Your ToDo list!===\n\n";
+	printListOfPairs(listOfPairs);
 }
-
-void saveListOfPairs(std::ofstream& outFILE, char** argv){
-	outFILE.open(argv[1]);
-	for(int i=0; i<listOfPairs.size();i++){
-        outFILE<<listOfPairs.at(i).first<<'|'<<listOfPairs.at(i).second;
-        if (i != (listOfPairs.size()-1))
-        outFILE << '\n';
-    }	
-}
-
-void printListOfPairs(){
-	for(int i=0; i<listOfPairs.size();i++){
-		cout << " " << i+1 << ". ";
-		if(i+1 < 10)
-			cout << " ";
-		if(listOfPairs.at(i).first==0){
-		cout << "Incomplete: "<<listOfPairs.at(i).second<<'\n';
-		}
-		if(listOfPairs.at(i).first==1){
-		cout << "Complete: "<<listOfPairs.at(i).second<<'\n';
-		}
-	}
-}
-
-void sortListOfPairs(){
-	std::sort(listOfPairs.begin(), listOfPairs.end(), 
-	[] (const auto &x, const auto &y) { return x.first < y.first; });
-}
-
-void toggle(){
-	int num;
-	clrPrint();
-	cout << "\n Please enter the line number of the task you wish to toggle\n -->";
-	cin >> num;
-	if(listOfPairs.at(num-1).first == 0)
-		listOfPairs.at(num-1).first = 1;
-	else listOfPairs.at(num-1).first = 0;
-	cout << "\n Your change to task \"" << num << ". " 
-			<< listOfPairs.at(num-1).second << "\" has been made...\n";
-	sleep(2);
-}
-
-void deleteTask(){
-	int num;
-	clrPrint();
+void deleteTask(vector<pair<int, string>>& listOfPairs) {
+	int num{};
+	clrPrint(listOfPairs);
 	cout << "\n Please enter the line number of the task you wish to delete\n -->";
 	cin >> num;
 	bool check = true;
-	while(check){
-		if(listOfPairs.size() >= num){
-			listOfPairs.erase(listOfPairs.begin()+num-1);
+	while (check) {
+		if (listOfPairs.size() >= num) {
+			listOfPairs.erase(listOfPairs.begin() + num - 1);
 			check = false;
 		}
 		else {
@@ -174,44 +73,132 @@ void deleteTask(){
 		}
 	}
 }
+void toggle(vector<pair<int, string>>& listOfPairs) {
+	int num{};
+	clrPrint(listOfPairs);
+	cout << "\n Please enter the line number of the task you wish to toggle\n -->";
+	cin >> num;
+	if (listOfPairs.at(num - 1).first == 0)
+		listOfPairs.at(num - 1).first = 1;
+	else listOfPairs.at(num - 1).first = 0;
+	cout << "\n Your change to task \"" << num << ". "
+		<< listOfPairs.at(num - 1).second << "\" has been made...\n";
+}
+void addListPair(vector<pair<int, string>>& listOfPairs) {
+	string task{};
+	clrPrint(listOfPairs);
 
-void editMenu(){
+	cout << "\n Please enter your task: \n -->";
+	cin.ignore();
+	getline(cin, task);
+
+	listOfPairs.emplace_back(0, task);
+	cout << "\n Your task has been entered, thank you!\n";
+}
+void saveListOfPairs(string filename, vector<pair<int, string>>& listOfPairs) {
+
+	ofstream outFILE(filename);
+	for (int i = 0; i < listOfPairs.size(); i++) {
+		outFILE << listOfPairs.at(i).first << '|' << listOfPairs.at(i).second;
+		if (i != (listOfPairs.size() - 1))
+			outFILE << '\n';
+	}
+}
+void sortListOfPairs(vector<pair<int, string>>& listOfPairs) {
+	sort(listOfPairs.begin(), listOfPairs.end(),
+		[](const auto& x, const auto& y) { return x.first < y.first; });
+}
+void editMenu(vector<pair<int, string>>& listOfPairs) {
 	bool loop = true;
-	while(loop){
-		char response;
+	while (loop) {
+		char response{};
 		cout << "\n (T)oggle task status\n";
 		cout << " (D)elete a task\n";
 		cout << " (R)eturn to Main Menu\n\n -->";
 		cin >> response;
 		switch (response) {
-			case 't':
-			case 'T':{
-				toggle();
-				sortListOfPairs();
-				clrPrint();
-				break;
-			}
-			case 'r':
-			case 'R':{
-				loop = false;
-				break;
-			}
-			case 'd':
-			case 'D':{
-				deleteTask();		
-				clrPrint();
-				break;
-			}
-			default:{
-				cout << " Menu item not understood, please try again.\n\n";
-				break;
-			}
+		case 't':
+		case 'T': {
+			toggle(listOfPairs);
+			sortListOfPairs(listOfPairs);
+			clrPrint(listOfPairs);
+			break;
+		}
+		case 'r':
+		case 'R': {
+			loop = false;
+			break;
+		}
+		case 'd':
+		case 'D': {
+			deleteTask(listOfPairs);
+			clrPrint(listOfPairs);
+			break;
+		}
+		default: {
+			cout << " Menu item not understood, please try again.\n\n";
+			break;
+		}
 		}
 	}
 }
+bool mainmenu(vector<pair<int, string>>& listOfPairs,char** argv) {
 
-void clrPrint(){
-	system("clear");
-	cout << "\n ===Your ToDo list!===\n\n";
-	printListOfPairs();
+	char menu{};
+			int num{};
+
+			sortListOfPairs(listOfPairs);
+			clrPrint(listOfPairs);
+
+			cout << "\n Please choose from one of the following menu items\n";
+			cout << " (A)dd new Task\n";
+			cout << " (E)dit your List\n";
+			cout << " (S)ave and Quit\n\n -->";
+		cin >> menu;
+		cout << "\n";
+
+		switch (menu) {
+		case 'a':
+		case 'A': {
+			addListPair(listOfPairs);
+			return true;
+			break;
+		}
+		case 'e':
+		case 'E': {
+			clrPrint(listOfPairs);
+			editMenu(listOfPairs);
+			return true;
+			break;
+		}
+		case 's':
+		case 'S': {
+			saveListOfPairs(argv[1], listOfPairs);
+			cout << "\n Your file has been saved.  Have a nice day!\n\n\n\n";
+			return false;
+			break;
+		}
+		default: {
+			cout << " Menu item not understood, please try again.\n\n";
+			return true;
+			break;
+		}
+		}
 }
+int main(int argc, char** argv) {
+
+	vector<pair<int, string>> listOfPairs{};
+	if (parseList(argv[1], listOfPairs))
+		while (mainmenu(listOfPairs,argv));
+	else
+	{
+		cout << "Bad File Name or empty file";
+		return 1;
+	}
+}
+
+
+
+
+
+
