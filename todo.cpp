@@ -48,6 +48,7 @@ Notes:
 #include <fstream>
 #include <iterator>
 
+
 using std::string;
 using std::cout;
 using std::cin;
@@ -58,7 +59,7 @@ using std::vector;
 void MainMenu(vector<string>& todoList,std::filesystem::path& savePath);
 
 // Display todo list
-void displayList(vector<string>& todoList);
+void DisplayList(vector<string>& todoList);
 
 // Add item function. Takes in vector reference, returns void.
 void AddItem(vector<string>& todoList);
@@ -156,6 +157,7 @@ void MainMenu(vector<string>& todoList, std::filesystem::path& savePath){
 				break;
 			case 4:
 				cout << "Sort by Completeness\n";
+				SortList(todoList);
 				break;
 			case 5:
 				cout << "Exit\n";
@@ -175,7 +177,7 @@ void MainMenu(vector<string>& todoList, std::filesystem::path& savePath){
 }
 
 // Display todo list
-void displayList(vector<string>& todoList){
+void DisplayList(vector<string>& todoList){
 	
 	for(int i = 0; i < todoList.size(); i++){
 		cout << i+1 << ") " << todoList[i] << "\n";
@@ -209,15 +211,29 @@ void DeleteItem(vector<string>& todoList){
 
 	// Display list, get user item choice to delete, delete that item from vector.
 	do{
-		displayList(todoList);
+		DisplayList(todoList);
 		cout << "Enter item number to delete: ";
 		cin >> item;
 		todoList.erase(todoList.begin() + (item - 1));
-		displayList(todoList);
+		DisplayList(todoList);
 		cout << "Delete another item? (y/n): ";
 		cin >> again;
 
 	} while(again == 'Y' || again == 'y');
+}
+
+// Sort list
+void SortList(vector<string>& todoList){
+	char ch = '[';
+	std::cout << '\n';
+	for(int i = 0; i < todoList.size(); i++){
+		if(todoList[i].find(ch) != string::npos)
+			std::cout << todoList[i] << '\n';
+	}
+	for(int i = 0; i < todoList.size(); i++){
+		if(todoList[i].find(ch) == string::npos)
+			std::cout << todoList[i] << '\n';
+	}
 }
 
 // Get path for save file
