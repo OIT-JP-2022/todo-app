@@ -22,14 +22,21 @@ bool parseList(string filename, vector<pair<int, string>>& listOfPairs) {
 	string complete{};
 	ifstream inFILE(filename, std::ios::in);
 	bool returnCheck = true;
-	while (inFILE.peek() != -1)
-		{
-			getline(inFILE, complete, '|');
-			getline(inFILE, task, '\n');
-			int num = stoi(complete);
-			listOfPairs.emplace_back(num, task);
-		}
-	return returnCheck;
+	char firstChar = inFILE.peek();
+	if((firstChar == '0') || (firstChar == '1')){
+		while (inFILE.peek() != -1)
+			{
+				getline(inFILE, complete, '|');
+				getline(inFILE, task, '\n');
+				int num = stoi(complete);
+				listOfPairs.emplace_back(num, task);
+			}
+		return returnCheck;
+	}
+	if(inFILE.peek() == -1){
+		return returnCheck;
+	}
+	return false;
 }
 void printListOfPairs(vector<pair<int, string>>& listOfPairs) {
 	int i {};
@@ -41,9 +48,11 @@ void printListOfPairs(vector<pair<int, string>>& listOfPairs) {
 		}
 	}
 	cout << "\nComplete: \n";
-	for (i = i; i < size; i++)
+	for (i = 0; i < size; i++)
 	{
-		cout << i + 1 << ". " << listOfPairs.at(i).second << '\n';
+		if(listOfPairs.at(i).first == 1){
+			cout << i + 1 << ". " << listOfPairs.at(i).second << '\n';
+		}
 	}
 }
 void clrPrint(vector<pair<int, string>>& listOfPairs) {
@@ -153,49 +162,47 @@ void editMenu(vector<pair<int, string>>& listOfPairs) {
 bool mainmenu(vector<pair<int, string>>& listOfPairs,char** argv) {
 
 	char menu{};
-			int num{};
-
-			sortListOfPairs(listOfPairs);
-			clrPrint(listOfPairs);
-
-			cout << "\n Please choose from one of the following menu items\n";
-			cout << " (A)dd new Task\n";
-			cout << " (E)dit your List\n";
-			cout << " (S)ave and Quit\n\n -->";
+		int num{};
+		
+		sortListOfPairs(listOfPairs);
+		clrPrint(listOfPairs);
+		cout << "\n Please choose from one of the following menu items\n";
+		cout << " (A)dd new Task\n";
+		cout << " (E)dit your List\n";
+		cout << " (S)ave and Quit\n\n -->";
 		cin >> menu;
 		cout << "\n";
-
 		switch (menu) {
-		case 'a':
-		case 'A': {
-			addListPair(listOfPairs);
-			return true;
-			break;
-		}
-		case 'e':
-		case 'E': {
-			if(!listOfPairs.empty()){
-				clrPrint(listOfPairs);
-				editMenu(listOfPairs);
+			case 'a':
+			case 'A': {
+				addListPair(listOfPairs);
+				return true;
+				break;
 			}
-			else {
-				cout << "\n Your list is empty, you may not edit\n";
-			}	
-			return true;
-			break;
-		}
-		case 's':
-		case 'S': {
-			saveListOfPairs(argv[1], listOfPairs);
-			cout << "\n Your file has been saved.  Have a nice day!\n\n\n\n";
-			return false;
-			break;
-		}
-		default: {
-			cout << " Menu item not understood, please try again.\n\n";
-			return true;
-			break;
-		}
+			case 'e':
+			case 'E': {
+				if(!listOfPairs.empty()){
+					clrPrint(listOfPairs);
+					editMenu(listOfPairs);
+				}
+				else {
+					cout << "\n Your list is empty, you may not edit\n";
+				}	
+				return true;
+				break;
+			}
+			case 's':
+			case 'S': {
+				saveListOfPairs(argv[1], listOfPairs);
+				cout << "\n Your file has been saved.  Have a nice day!\n\n\n\n";
+				return false;
+				break;
+			}
+			default: {
+				cout << " Menu item not understood, please try again.\n\n";
+				return true;
+				break;
+			}
 		}
 }
 int main(int argc, char** argv) {
@@ -205,7 +212,8 @@ int main(int argc, char** argv) {
 		while (mainmenu(listOfPairs,argv));
 	else
 	{
-		cout << "Bad File Name or empty file";
+		cout << "\n\n File is not formatted correctly.\n";
+		cout << " Please refer to the ReadMe file for proper formatting!\n\n";
 		return 1;
 	}
 }
