@@ -1,4 +1,4 @@
 Item
 Item2
-[DONE]Item3
-Item4
+Item3
+[DONE]Item4

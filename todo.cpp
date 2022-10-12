@@ -145,18 +145,19 @@ void MainMenu(vector<string>& todoList, std::filesystem::path& savePath){
 		// Switch for menu selection
 		switch(choice){
 			case 1:
-				cout << "Add Item\n";
+				//cout << "Add Item\n";
 				AddItem(todoList);
 				break;
 			case 2:
-				cout << "Delete Item\n";
+				//cout << "Delete Item\n";
 				DeleteItem(todoList);
 				break;
 			case 3:
-				cout << "Toggle Status\n";
+				//cout << "Toggle Status\n";
+				ToggleItemStatus(todoList);
 				break;
 			case 4:
-				cout << "Sort by Completeness\n";
+				//cout << "Sort by Completeness\n";
 				SortList(todoList);
 				break;
 			case 5:
@@ -234,6 +235,21 @@ void SortList(vector<string>& todoList){
 		if(todoList[i].find(ch) == string::npos)
 			std::cout << todoList[i] << '\n';
 	}
+}
+
+void ToggleItemStatus(vector<string>& todoList){
+	
+	int item;
+	char ch = '[';
+
+	DisplayList(todoList);
+	cout << "Enter item number to toggle status: ";
+	cin >> item;
+        std::cout << todoList[item - 1] << '\n';	
+	if(todoList[item - 1].find(ch) != string::npos)
+		todoList[item - 1].erase(0,6);
+	else
+		todoList[item - 1] = "[DONE]" + todoList[item - 1];
 }
 
 // Get path for save file
