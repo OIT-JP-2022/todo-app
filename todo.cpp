@@ -14,7 +14,7 @@ bool SortList(listitems& items);
 bool RemoveItem(listitems& items);
 bool LastCharBool(std::string str);
 listitems FileListToVector(std::fstream& file);
-void FileListFromVector(listitems items, std::fstream& file);
+void SaveToFileListFromVector(listitems items, std::fstream& file);
 
 int main(int argc,char*argv[]) 
 {
@@ -33,7 +33,7 @@ int main(int argc,char*argv[])
 
     while (OptionsMenu(items));
     
-  //  FileListFromVector(items, ListFile);
+    SaveToFileListFromVector(items, ListFile);
 
     return 0;
 }
@@ -52,7 +52,7 @@ listitems FileListToVector(std::fstream& file){
 
 }
 
-void SaveFileListFromVector(listitems items, std::fstream& file){
+void SaveToFileListFromVector(listitems items, std::fstream& file){
     file.clear();
     file.seekg(0);
     for (auto& item: items)
