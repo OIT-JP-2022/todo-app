@@ -119,13 +119,34 @@ class toDoList
 int main(int argc, char** argv)
 {
 	string argument = argv[1];
-	cout << "You have entered " << argc << " arguments: " << "\n";
 	//for(int i = 0; i <  argc; ++i)
 	//	cout << argv[i] << "\n";
 
 	toDoList myList; //create instance of list
 	if(argument.compare( "-l") == 0)  //check if -l
 		myList.loadList(argv[2]);
+	else if(argument.compare("-h") == 0)
+	{
+		cout << "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n"
+		     << "||     +	 TODO PROGRAM  +          ||\n"
+		     << "||  +				  +       ||\n"
+		     << "||		 USER MANUAL		  ||\n"
+		     << "||    			 +	          ||\n"
+		     << "||		+	+	        , ||\n"
+		     << "||    ,                                   ||\n"
+		     << "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n"
+		     <<	"		   |vv|		    \n"
+		     << "    ,  ,   ,       |vv|    ,       ,       \n"
+		     << "                   |vv|       ,       ,    \n"
+		     << "  ,    ,      ,    |vv|          ,         \n"
+		     << "    ,      ,       |vv|    ,          ,    \n"
+		     << "    ,   ,          |vv|                    \n"
+		     << "                   |vv|      ,      ,      \n \n\n"
+
+		     << "FLAGS:\n"
+		     << "-h		Displays the program's manual\n"
+		     << "-l		Loads a .txt file and displays its content\n";
+	}
 	else
 	{
 		cout<<"Usage: Loads or saves a todo list from a .txt document. EX: todo -l filename.txt \n";
