@@ -7,8 +7,14 @@ Please read on before using this program, thank you!
 To compile, run: `make todo`
 To run, type ./todo filename.txt
 
-You may load your own todo list, or use the sample list,
-called sample.txt. 
+You may load your own todo list, or use the following lists provided:
+
+sample.txt     <= this starts as an unsorted sample list of tasks
+				(note that once you open it, it will sort and save
+				as such)
+empty.txt      <= this is an empty file we used for testing
+badformat.txt  <= this is a file that isn't formatted correctly and
+					should generate our error message
 
 
 **IMPORTANT**

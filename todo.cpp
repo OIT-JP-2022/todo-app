@@ -38,6 +38,7 @@ bool parseList(string filename, vector<pair<int, string>>& listOfPairs) {
 	}
 	return false;
 }
+
 void printListOfPairs(vector<pair<int, string>>& listOfPairs) {
 	int i {};
 	cout << "Incomplete: \n";
@@ -55,6 +56,7 @@ void printListOfPairs(vector<pair<int, string>>& listOfPairs) {
 		}
 	}
 }
+
 void clrPrint(vector<pair<int, string>>& listOfPairs) {
 	cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n	===Your ToDo list!===\n\n";
 	if(!listOfPairs.empty())
@@ -64,6 +66,7 @@ void clrPrint(vector<pair<int, string>>& listOfPairs) {
 		cout << "\n\n     ===> Editing is disabled <===\n\n";
 	}
 }
+
 void deleteTask(vector<pair<int, string>>& listOfPairs) {
 	int num{};
 	clrPrint(listOfPairs);
@@ -81,6 +84,7 @@ void deleteTask(vector<pair<int, string>>& listOfPairs) {
 		}
 	}
 }
+
 void toggle(vector<pair<int, string>>& listOfPairs) {
 	int num{};
 	clrPrint(listOfPairs);
@@ -99,21 +103,19 @@ void toggle(vector<pair<int, string>>& listOfPairs) {
 	else {
 		cout << "\n Your choice is out of the range of tasks\n";
 	}
-
 }
+
 void addListPair(vector<pair<int, string>>& listOfPairs) {
 	string task{};
 	clrPrint(listOfPairs);
-
 	cout << "\n Please enter your task: \n -->";
 	cin.ignore();
 	getline(cin, task);
-
 	listOfPairs.emplace_back(0, task);
 	cout << "\n Your task has been entered, thank you!\n";
 }
-void saveListOfPairs(string filename, vector<pair<int, string>>& listOfPairs) {
 
+void saveListOfPairs(string filename, vector<pair<int, string>>& listOfPairs) {
 	ofstream outFILE(filename);
 	for (int i = 0; i < listOfPairs.size(); i++) {
 		outFILE << listOfPairs.at(i).first << '|' << listOfPairs.at(i).second;
@@ -121,10 +123,12 @@ void saveListOfPairs(string filename, vector<pair<int, string>>& listOfPairs) {
 			outFILE << '\n';
 	}
 }
+
 void sortListOfPairs(vector<pair<int, string>>& listOfPairs) {
 	sort(listOfPairs.begin(), listOfPairs.end(),
 		[](const auto& x, const auto& y) { return x.first < y.first; });
 }
+
 void editMenu(vector<pair<int, string>>& listOfPairs) {
 	bool loop = true;
 	while (loop) {
@@ -159,11 +163,10 @@ void editMenu(vector<pair<int, string>>& listOfPairs) {
 		}
 	}
 }
-bool mainmenu(vector<pair<int, string>>& listOfPairs,char** argv) {
 
+bool mainmenu(vector<pair<int, string>>& listOfPairs,char** argv) {
 	char menu{};
 		int num{};
-		
 		sortListOfPairs(listOfPairs);
 		clrPrint(listOfPairs);
 		cout << "\n Please choose from one of the following menu items\n";
@@ -206,7 +209,6 @@ bool mainmenu(vector<pair<int, string>>& listOfPairs,char** argv) {
 		}
 }
 int main(int argc, char** argv) {
-
 	vector<pair<int, string>> listOfPairs{};
 	if (parseList(argv[1], listOfPairs))
 		while (mainmenu(listOfPairs,argv));
