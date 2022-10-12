@@ -22,20 +22,13 @@ bool parseList(string filename, vector<pair<int, string>>& listOfPairs) {
 	string complete{};
 	ifstream inFILE(filename, std::ios::in);
 	bool returnCheck = true;
-
-	//if (inFILE.peek() == -1)
-		//returnCheck = false;
-	//else
-	//{
-		while (inFILE.peek() != -1)
+	while (inFILE.peek() != -1)
 		{
 			getline(inFILE, complete, '|');
 			getline(inFILE, task, '\n');
 			int num = stoi(complete);
 			listOfPairs.emplace_back(num, task);
 		}
-	//}
-
 	return returnCheck;
 }
 void printListOfPairs(vector<pair<int, string>>& listOfPairs) {
@@ -54,11 +47,12 @@ void printListOfPairs(vector<pair<int, string>>& listOfPairs) {
 	}
 }
 void clrPrint(vector<pair<int, string>>& listOfPairs) {
-	cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n ===Your ToDo list!===\n\n";
+	cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n	===Your ToDo list!===\n\n";
 	if(!listOfPairs.empty())
 		printListOfPairs(listOfPairs);
 	else{
-		cout << "\n You have no items in your list, yet!\n\n";
+		cout << "\n You have no items in your list at the moment!";
+		cout << "\n\n     ===> Editing is disabled <===\n\n";
 	}
 }
 void deleteTask(vector<pair<int, string>>& listOfPairs) {
@@ -83,11 +77,20 @@ void toggle(vector<pair<int, string>>& listOfPairs) {
 	clrPrint(listOfPairs);
 	cout << "\n Please enter the line number of the task you wish to toggle\n -->";
 	cin >> num;
-	if (listOfPairs.at(num - 1).first == 0)
-		listOfPairs.at(num - 1).first = 1;
-	else listOfPairs.at(num - 1).first = 0;
-	cout << "\n Your change to task \"" << num << ". "
+	if (listOfPairs.size() >= num){
+		if (listOfPairs.at(num - 1).first == 0){
+			listOfPairs.at(num - 1).first = 1;
+		}
+		else {
+		listOfPairs.at(num - 1).first = 0;
+		}
+		cout << "\n Your change to task \"" << num << ". "
 		<< listOfPairs.at(num - 1).second << "\" has been made...\n";
+	}
+	else {
+		cout << "\n Your choice is out of the range of tasks\n";
+	}
+
 }
 void addListPair(vector<pair<int, string>>& listOfPairs) {
 	string task{};
@@ -171,8 +174,13 @@ bool mainmenu(vector<pair<int, string>>& listOfPairs,char** argv) {
 		}
 		case 'e':
 		case 'E': {
-			clrPrint(listOfPairs);
-			editMenu(listOfPairs);
+			if(!listOfPairs.empty()){
+				clrPrint(listOfPairs);
+				editMenu(listOfPairs);
+			}
+			else {
+				cout << "\n Your list is empty, you may not edit\n";
+			}	
 			return true;
 			break;
 		}
