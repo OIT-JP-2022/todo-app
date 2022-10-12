@@ -3,21 +3,24 @@
 #include <utility>
 #include <vector> 
 #include <string> 
-
+#include <list>
+#include <bits/stdc++.h>
 using listitem = std::pair<std::string,bool>;
 using listitems = std::vector<listitem>;
-
+using namespace std;
 int ValidateCall(int InputCount, char** argv);
 bool OptionsMenu(std::fstream& file);
 void Print(std::fstream& file);
-
+bool SortList(std::fstream& file);
+bool RemoveItem(std::fstream& file);
 
 std::vector<std::string> MenuOptions
 {	
   "1. Add new ToDo item",
   "2. Mark ToDo items Complete/Incomplete",
   "3. Remove ToDo item",
-  "4. Save and Quit"
+  "4. Sort ToDo items",
+  "5. Save and Quit"
 
 };
 int main(int argc,char*argv[]) 
@@ -57,6 +60,62 @@ bool LastCharBool(std::string str){
             return false;
     }
 }
+
+bool RemoveItem(std::fstream& file)
+{
+	/*
+	Print(file);
+	std::cout << "Enter which Todo list item you would like to delete or enter '-q' to quit addin: \n =>";
+	std::string item;
+	std::getline(std::cin,item);
+	if (item == "-q")
+		return false;
+
+	std::string line;
+	file.clear();
+	file.seekg(0,std::ios::beg);
+	int pos = 0;
+	while(std::getline(file, line))
+	{
+         
+	line.pop_back(); //Remove the T or F flag.
+	std::cout << line;
+	if (line == item)
+        {
+	   
+	   while(std::getline(file, line))	   
+	   {
+
+           
+	   file.clear();
+	   file.seekg(pos); //Brings us back to beginning
+           file << line << "\n";
+           pos = file.tellg();
+	   std::getline(file, line);
+	   
+	   }
+	
+	file.seekg(pos - 1);   
+        file
+	}
+	pos = file.tellg();
+	}
+	*/
+
+		return true;
+}
+//void deleteItem(const string& filename)
+//{
+//  auto tasks = readToVector(filename);
+//  printVector(tasks,"----Edit ToDo List----");
+//  int item = 0;
+//  cout << "Which task would you like to delete: ";
+//  cin >> item;
+
+//  tasks.erase(tasks.begin()+(--item));
+//  writeFromVector(filename, tasks);
+//}
+
 
 
 bool AddNewItem(std::fstream& file)
@@ -118,23 +177,25 @@ bool OptionsMenu(std::fstream& file)
  std::cout << " =>";
  int option;
  std::cin>>option;
+ std::cin.ignore();
  switch(option){
 	case 1:
-         std::cin.ignore();
 	 while (AddNewItem(file));
 	 return true;
 	case 2: 
 	 //Mark Todo Items
-	 std::cin.ignore();
          while (UpdateItem(file));
          return true;
 	case 3: 
 	 //Remove Todo Items
+	 while(RemoveItem(file));
 	 //method call
 	 return true;
 	case 4: 
-	 //Save and quit
-	 //method call
+	 while(SortList(file));
+	 return true;
+	case 5: 
+	 //Save and Quit
 	 return false;
 default:
 std::cout << "You did not select a valid option!";
@@ -142,8 +203,15 @@ return true;
  }
 }
 
-
-
+bool SortList(std::fstream& file){
+	//std::sort(
+        //file.seekg(0, std::ios::beg);
+	//ListFile.begin(), ListFile.end();
+        //};
+	cout << "List has been Sorted! \n";
+	Print(file);
+	return false;
+}
 
 void Print(std::fstream& file){
     std::cout << " ===== List of all todo items ===== \n";
