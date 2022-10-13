@@ -10,7 +10,7 @@
 using Item = std::pair<std::string, bool>;
 using List = std::vector<Item>;
 
-List CreateListFromFile(std::string filename);
+void FillListFromFile(std::string filename, List &list);
 void SaveFile(std::string filename, List &list);
 const void PrintList(const List &list);
 const void PrintPrompt();
@@ -28,10 +28,12 @@ int main(int argc, char *argv[]) {
     List list;
     bool continueLoop = true;
     
-    if(argc != 2)
+    if(argc != 2) {
+        std::cerr << "Usage: todo [filename]" << '\n';
         return -1;
+    }
 
-    list = ReadFile(argv[1]);
+    FillListFromFile(argv[1], list);
 
     do {
         PrintPrompt();
@@ -41,25 +43,22 @@ int main(int argc, char *argv[]) {
     } while(continueLoop);
 }
 
-List CreateListFromFile(std::string filename) {
-    List list;
+void FillListFromFile(std::string filename, List &list) {
     std::string token;
-    std::ifstream infile;
+    std::ifstream infile (filename);
 
-    infile.open(filename);
-    
-    while(infile.peek() != EOF) {
-        Item item;
+    if(infile.is_open()) {
+        while(getline(infile, token, ',')) {
+            Item item;
+            item.first = token;
 
-        getline(infile, token, ',');
-        item.first = token;
-        
-        getline(infile, token);
-        std::istringstream(token) >> item.second;
-        
-        list.push_back(item);
+            getline(infile, token);
+            std::istringstream(token) >> item.second;
+
+            list.push_back(item);
+        }
+        infile.close();
     }
-    return list;
 }
 
 void SaveFile(std::string filename, List &list) {
