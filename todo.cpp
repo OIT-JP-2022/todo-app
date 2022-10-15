@@ -1,4 +1,4 @@
-// Contributors: Nathan Green, Nate Castle, Keegan Hauser
+// Contributors: Aaron Whitley and Keegan Hauser
 
 #include <iostream>
 #include <fstream>
@@ -23,6 +23,8 @@ void AddItem(List &list);
 void DeleteItem(List &list);
 bool ConfirmDecision();
 int SelectTask(List &list);
+void SearchList(List &list);
+
 
 int main(int argc, char *argv[]) {
     List list;
@@ -90,7 +92,8 @@ const void PrintPrompt() {
         "3. Toggle task completeness",
         "4. Sort list",
         "5. Print list",
-        "6. Exit"
+		"6. Search list",
+        "7. Exit"
     };
 
     for(auto &option : menuOptions)
@@ -123,7 +126,11 @@ bool SelectMenuOption(List &list) {
         PrintList(list);
         break;
     }
-    case 6: {
+	case 6: {
+		SearchList(list);
+		break;
+	}
+    case 7: {
         return false;
         break;
     }
@@ -211,4 +218,16 @@ void SortList(List &list) {
     );
     std::cout << "\nSorted the list based on completeness.\n";
 
+}
+
+void SearchList(List &list) {
+	List resultsList;
+	std::string substringToFind = GetUserInputStr("Enter string to find: ");
+
+	std::cout << "\nTasks containing " << substringToFind << ":\n";
+	for(auto &item : list) {
+		if(item.first.find(substringToFind) != std::string::npos)
+			resultsList.push_back(item);
+	}
+	PrintList(resultsList); // Just so we don't need to re-copy the PrintList statements
 }
