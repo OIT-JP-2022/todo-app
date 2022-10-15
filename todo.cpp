@@ -210,4 +210,5 @@ void SortList(List &list) {
         [](const Item &x, const Item &y) -> bool { return x.second < y.second; }
     );
     std::cout << "\nSorted the list based on completeness.\n";
+
 }
