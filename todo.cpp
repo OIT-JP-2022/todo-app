@@ -29,7 +29,6 @@ auto searchTodo(const Lines & todos) {
   std::cout << "This is the keyword: " << keyword << '\n';
   
   for(const auto todo : todos) {
-   // todo.find(keyword);
     if (todo.find(keyword) != std::string::npos)
       std::cout << todo << '\n';
     else
