@@ -4,6 +4,14 @@
 
 using Lines = std::vector<std::string>;
 
+
+auto prompt(std::string action) {
+  std::cout << "What do you want to do " << action << "?\n";
+  std::string line{};
+  std::getline(std::cin, line);
+  return line;
+}
+
 auto addTodo(Lines & todos, const std::string & todo) {
   todos.push_back(todo);
 }
@@ -14,6 +22,19 @@ auto removeTodo(Lines & todos, int index) {
 
 auto editTodo(Lines & todos, int index, const std::string & todo) {
   todos[index] = todo;
+}
+
+auto searchTodo(const Lines & todos) {
+  std::string keyword =  prompt("search");
+  std::cout << "This is the keyword: " << keyword << '\n';
+  
+  for(const auto todo : todos) {
+   // todo.find(keyword);
+    if (todo.find(keyword) != std::string::npos)
+      std::cout << todo << '\n';
+    else
+      std::cout << "no match" << '\n';
+  }
 }
 
 auto print(const std::string & todo) {
@@ -45,17 +66,10 @@ auto writeTodos(const Lines & todos, const std::string & filename) {
   }
 }
 
-auto prompt() {
-  std::cout << "What do you want to do? (add) " << '\n';
-  std::string line{};
-  std::getline(std::cin, line);
-  return line;
-}
-
 auto run(Lines & todos) {
   print(todos);
 
-  auto option = prompt();
+  auto option = prompt("add");
   if (option == "a" || option == "add") {
     std::cout << "Add todo: ";
     std::string line{};
@@ -74,9 +88,9 @@ auto run(Lines & todos) {
 int main() {
   std::string filename{"todos.txt"};
   auto todos = readTodos(filename);
-
-  while (run(todos)) {}
-
+  print(todos);
+ // while (run(todos)) {}
+  searchTodo(todos);
   writeTodos(todos, filename);
 }
 
