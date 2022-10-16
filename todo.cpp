@@ -2,6 +2,7 @@
 #include <fstream>
 #include <vector>
 
+int i = 0;
 using Lines = std::vector<std::string>;
 
 auto addTodo(Lines & todos, const std::string & todo) {
@@ -16,12 +17,26 @@ auto editTodo(Lines & todos, int index, const std::string & todo) {
 }
 
 auto print(const std::string & todo) {
-  std::cout << todo << '\n';
+ std::cout << todo << '\n';
 }
-
+auto searchTodo(Lines & todos, std::string input){ //search for exact phrase of todo
+for(const auto & todo : todos) {
+   i++;// dumb and bad putting this here because I can't believe i...
+ if(input == todo)
+    {
+   // i++;
+      std::cout << "Todo is in the: " << i << " number in elements"  << "\n"; //show index?
+      //i = 0;
+      print(todo); //user searches for item, prints it
+    }
+  }
+ i = 0;
+}
 auto print(Lines & todos) {
+  std::cout << "=-=-=-=-=-=-=-=-=- Printing Todo  =-=-=-=-=-=-=-=-=-=" <<  "\n";
   for (const auto & todo : todos) {
     print(todo);
+    std::cout << "\n";
   }
 }
 
@@ -52,7 +67,7 @@ auto prompt() {
 }
 
 auto run(Lines & todos) {
-  print(todos);
+ // print(todos);
 
   auto option = prompt();
   if (option == "a" || option == "add") {
@@ -62,8 +77,8 @@ auto run(Lines & todos) {
     addTodo(todos, line);
     return true;
   } else if (option == "q" || option == "quit") {
- 
-}   
+
+}
     //else if remove
     else if(option == "r" || option == "remove"){
     std::cout << "Remove todo: ";
@@ -81,17 +96,26 @@ else if(option == "p" || option == "print"){
     //std::getline(std::Cin, line);
     print(todos);
 return true;
-
+}
     //else if search/#
+ else if(option == "s" || option == "search"){
+    std::cout << "Search todo: ";
+    std::string line{};
+    std::getline(std::cin, line);
+   // int boi = stoi(line);
+    searchTodo(todos, line);
+return true;
+}
+
     //else if nest add
 
     return false;
   }
 
-  std::cout << '\n';
+ // std::cout << "\n";
 
-  return true;
-}
+//  return true;
+ //maybe delete this but idk
 
 int main() {
   std::string filename{"todos.txt"};
