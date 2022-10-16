@@ -92,7 +92,7 @@ const void PrintPrompt() {
         "3. Toggle task completeness",
         "4. Sort list",
         "5. Print list",
-		"6. Search list",
+	"6. Search list",
         "7. Exit"
     };
 
@@ -126,10 +126,10 @@ bool SelectMenuOption(List &list) {
         PrintList(list);
         break;
     }
-	case 6: {
-		SearchList(list);
-		break;
-	}
+    case 6: {
+	SearchList(list);
+	break;
+    }
     case 7: {
         return false;
         break;
