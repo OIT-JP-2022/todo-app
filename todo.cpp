@@ -51,6 +51,13 @@ auto readTodos(const std::string & filename) {
   return todos;
 }
 
+//add fileReadFrom
+
+//1: Remove entire list, use for loop for current
+//2: Add from txt to program in todos.
+//3: Write to function like read but specific output file so can overwrite old todo
+
+
 auto writeTodos(const Lines & todos, const std::string & filename) {
   std::ofstream output{filename};
 
@@ -106,6 +113,15 @@ return true;
     searchTodo(todos, line);
 return true;
 }
+else if(option == "f" || option == "file"){
+    std::cout << "Enter your file name to read from: ";
+    std::string line{};
+    std::getline(std::cin, line);
+   //Call custom function using the file name like r 
+    readTodos(line);
+return true;
+}
+
 
     //else if nest add
 
