@@ -4,7 +4,7 @@
 #include <vector>
 #include <utility>
 #include <algorithm>
-
+#include <list>
 using std::cout;
 using std::cin;
 using std::endl;
@@ -15,50 +15,75 @@ using std::ifstream;
 using std::ofstream;
 using std::vector;
 using std::pair;
+using std::list;
 
-bool parseList(string filename, vector<pair<int, string>>& listOfPairs) {
+ class Task {
+
+        private:
+	vector<Task> _SubTasks;
+
+	public:
+
+	bool _IsComplete;
+	string _Task;
+	Task() = default;
+	Task(bool Complete, string task){
+	     _IsComplete = Complete; 
+	    _Task = task;
+	};
+//	AddSubTask(Task){
+	
+	//_SubTasks.push_back(Task);
+	
+//	}
+
+};
+
+
+
+//Bool
+auto parseList(string filename,	vector<Task>& listOfPairs) {
 	string task{};
 	string buffer{};
 	string complete{};
+
 	ifstream inFILE(filename, std::ios::in);
 	bool returnCheck = true;
 	char firstChar = inFILE.peek();
-	if((firstChar == '0') || (firstChar == '1')){
-		while (inFILE.peek() != -1)
-			{
-				getline(inFILE, complete, '|');
-				getline(inFILE, task, '\n');
-				int num = stoi(complete);
-				listOfPairs.emplace_back(num, task);
-			}
-		return returnCheck;
+	if (inFILE.is_open()){
+		cout << "Writing from File..\n";
+		for(string line {}; getline(inFILE, buffer);){
+			complete = buffer.substr(0,1);	
+			task = buffer.substr(2, buffer.size()-2);
+			int num = stoi(complete);
+			listOfPairs.emplace_back(static_cast<bool>(num),task);
+		}
+		return true;
 	}
-	if(inFILE.peek() == -1){
-		return returnCheck;
-	}
-	return false;
+	else
+		return false;
 }
-
-void printListOfPairs(vector<pair<int, string>>& listOfPairs) {
+//void
+auto printListOfPairs(vector<Task>& listOfPairs) {
 	int i {};
 	cout << "Incomplete: \n";
 	int size = listOfPairs.size();
 	for (i = 0; i < size; i++){
-		if(listOfPairs.at(i).first == 0){
-			cout << i + 1<< ". " << listOfPairs.at(i).second << '\n';
+		if(listOfPairs.at(i)._IsComplete == 0){
+			cout << i + 1<< ". " << listOfPairs.at(i)._Task<< '\n';
 		}
 	}
 	cout << "\nComplete: \n";
 	for (i = 0; i < size; i++)
 	{
-		if(listOfPairs.at(i).first == 1){
-			cout << i + 1 << ". " << listOfPairs.at(i).second << '\n';
+		if(listOfPairs.at(i)._IsComplete == 1){
+			cout << i + 1 << ". " << listOfPairs.at(i)._Task<< '\n';
 		}
 	}
 }
-
-void clrPrint(vector<pair<int, string>>& listOfPairs) {
-	cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n	===Your ToDo list!===\n\n";
+//void
+auto clrPrint(vector<Task>& listOfPairs) {
+	cout << "\n\n\n	===Your ToDo list!===\n\n";
 	if(!listOfPairs.empty())
 		printListOfPairs(listOfPairs);
 	else{
@@ -66,8 +91,8 @@ void clrPrint(vector<pair<int, string>>& listOfPairs) {
 		cout << "\n\n     ===> Editing is disabled <===\n\n";
 	}
 }
-
-void deleteTask(vector<pair<int, string>>& listOfPairs) {
+//void
+auto deleteTask(vector<Task> & listOfPairs) {
 	int num{};
 	clrPrint(listOfPairs);
 	cout << "\n Please enter the line number of the task you wish to delete\n -->";
@@ -84,52 +109,52 @@ void deleteTask(vector<pair<int, string>>& listOfPairs) {
 		}
 	}
 }
-
-void toggle(vector<pair<int, string>>& listOfPairs) {
+//void
+auto toggle(vector<Task>& listOfPairs) {
 	int num{};
 	clrPrint(listOfPairs);
 	cout << "\n Please enter the line number of the task you wish to toggle\n -->";
 	cin >> num;
 	if (listOfPairs.size() >= num){
-		if (listOfPairs.at(num - 1).first == 0){
-			listOfPairs.at(num - 1).first = 1;
+		if (listOfPairs.at(num - 1)._IsComplete == 0){
+			listOfPairs.at(num - 1)._IsComplete = 1;
 		}
 		else {
-		listOfPairs.at(num - 1).first = 0;
+		listOfPairs.at(num - 1)._IsComplete = 0;
 		}
 		cout << "\n Your change to task \"" << num << ". "
-		<< listOfPairs.at(num - 1).second << "\" has been made...\n";
+		<< listOfPairs.at(num - 1)._Task << "\" has been made...\n";
 	}
 	else {
 		cout << "\n Your choice is out of the range of tasks\n";
 	}
 }
-
-void addListPair(vector<pair<int, string>>& listOfPairs) {
+//void
+auto addListPair(vector<Task>& listOfPairs) {
 	string task{};
 	clrPrint(listOfPairs);
 	cout << "\n Please enter your task: \n -->";
 	cin.ignore();
 	getline(cin, task);
 	listOfPairs.emplace_back(0, task);
-	cout << "\n Your task has been entered, thank you!\n";
+	cout << "\n Your task \""<</*( listOfPairs.end()-1) -> _Task*/ task <<"\"  has been entered, thank you!\n";
 }
-
-void saveListOfPairs(string filename, vector<pair<int, string>>& listOfPairs) {
+//void
+auto saveListOfPairs(string filename, vector<Task>& listOfPairs) {
 	ofstream outFILE(filename);
 	for (int i = 0; i < listOfPairs.size(); i++) {
-		outFILE << listOfPairs.at(i).first << '|' << listOfPairs.at(i).second;
+		outFILE << listOfPairs.at(i)._IsComplete << '|' << listOfPairs.at(i)._Task;
 		if (i != (listOfPairs.size() - 1))
 			outFILE << '\n';
 	}
 }
-
-void sortListOfPairs(vector<pair<int, string>>& listOfPairs) {
+//void
+auto sortListOfPairs(vector<Task>& listOfPairs) {
 	sort(listOfPairs.begin(), listOfPairs.end(),
-		[](const auto& x, const auto& y) { return x.first < y.first; });
+		[](const auto& x, const auto& y) { return x._IsComplete < y._IsComplete; });
 }
-
-void editMenu(vector<pair<int, string>>& listOfPairs) {
+//void
+auto editMenu(vector<Task> & listOfPairs) {
 	bool loop = true;
 	while (loop) {
 		char response{};
@@ -156,6 +181,7 @@ void editMenu(vector<pair<int, string>>& listOfPairs) {
 			clrPrint(listOfPairs);
 			break;
 		}
+		//(a)	  
 		default: {
 			cout << " Menu item not understood, please try again.\n\n";
 			break;
@@ -163,8 +189,8 @@ void editMenu(vector<pair<int, string>>& listOfPairs) {
 		}
 	}
 }
-
-bool mainmenu(vector<pair<int, string>>& listOfPairs,char** argv) {
+//void
+auto mainmenu(vector<Task> & listOfPairs,char** argv) {
 	char menu{};
 		int num{};
 		sortListOfPairs(listOfPairs);
@@ -206,10 +232,11 @@ bool mainmenu(vector<pair<int, string>>& listOfPairs,char** argv) {
 				return true;
 				break;
 			}
+		
 		}
 }
 int main(int argc, char** argv) {
-	vector<pair<int, string>> listOfPairs{};
+	vector<Task> listOfPairs{};
 	if (parseList(argv[1], listOfPairs))
 		while (mainmenu(listOfPairs,argv));
 	else
@@ -219,3 +246,4 @@ int main(int argc, char** argv) {
 		return 1;
 	}
 }
+//Todo
