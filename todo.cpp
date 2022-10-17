@@ -19,21 +19,22 @@ using std::list;
 
  class Task {
 
-        private:
+    private:
 	vector<Task> _SubTasks;
 
 	public:
-
 	bool _IsComplete;
 	string _Task;
 	Task() = default;
-	Task(bool Complete, string task){
+	Task(bool Complete, string task)
+	{
 	     _IsComplete = Complete; 
 	    _Task = task;
 	};
-//	AddSubTask(Task){
+//	AddSubTask(Task)
+//	{
 	
-	//_SubTasks.push_back(Task);
+//	_SubTasks.push_back(Task);
 	
 //	}
 
@@ -42,7 +43,7 @@ using std::list;
 
 
 //Bool
-auto parseList(string filename,	vector<Task>& listOfPairs) {
+auto parseList(string filename, vector<Task>& listOfPairs) {
 	string task{};
 	string buffer{};
 	string complete{};
@@ -50,9 +51,11 @@ auto parseList(string filename,	vector<Task>& listOfPairs) {
 	ifstream inFILE(filename, std::ios::in);
 	bool returnCheck = true;
 	char firstChar = inFILE.peek();
-	if (inFILE.is_open()){
+	if (inFILE.is_open())
+	{
 		cout << "Writing from File..\n";
-		for(string line {}; getline(inFILE, buffer);){
+		for(string line {}; getline(inFILE, buffer);)
+		{
 			complete = buffer.substr(0,1);	
 			task = buffer.substr(2, buffer.size()-2);
 			int num = stoi(complete);
@@ -60,23 +63,23 @@ auto parseList(string filename,	vector<Task>& listOfPairs) {
 		}
 		return true;
 	}
-	else
-		return false;
+	else return false;
 }
 //void
 auto printListOfPairs(vector<Task>& listOfPairs) {
-	int i {};
+	int i{};
 	cout << "Incomplete: \n";
 	int size = listOfPairs.size();
-	for (i = 0; i < size; i++){
-		if(listOfPairs.at(i)._IsComplete == 0){
-			cout << i + 1<< ". " << listOfPairs.at(i)._Task<< '\n';
+	for (i = 0; i < size; i++)
+	{
+		if(listOfPairs.at(i)._IsComplete == 0) {
+			cout << i + 1<< ". " << listOfPairs.at(i)._Task<< '\n'; 
 		}
 	}
 	cout << "\nComplete: \n";
 	for (i = 0; i < size; i++)
 	{
-		if(listOfPairs.at(i)._IsComplete == 1){
+		if(listOfPairs.at(i)._IsComplete == 1) {
 			cout << i + 1 << ". " << listOfPairs.at(i)._Task<< '\n';
 		}
 	}
@@ -86,7 +89,8 @@ auto clrPrint(vector<Task>& listOfPairs) {
 	cout << "\n\n\n	===Your ToDo list!===\n\n";
 	if(!listOfPairs.empty())
 		printListOfPairs(listOfPairs);
-	else{
+	else
+	{
 		cout << "\n You have no items in your list at the moment!";
 		cout << "\n\n     ===> Editing is disabled <===\n\n";
 	}
@@ -98,12 +102,15 @@ auto deleteTask(vector<Task> & listOfPairs) {
 	cout << "\n Please enter the line number of the task you wish to delete\n -->";
 	cin >> num;
 	bool check = true;
-	while (check) {
-		if (listOfPairs.size() >= num) {
+	while (check) 
+	{
+		if (listOfPairs.size() >= num) 
+		{
 			listOfPairs.erase(listOfPairs.begin() + num - 1);
 			check = false;
 		}
-		else {
+		else 
+		{
 			cout << "Your number is outside of the range of tasks, try again\n -->";
 			cin >> num;
 		}
@@ -115,17 +122,18 @@ auto toggle(vector<Task>& listOfPairs) {
 	clrPrint(listOfPairs);
 	cout << "\n Please enter the line number of the task you wish to toggle\n -->";
 	cin >> num;
-	if (listOfPairs.size() >= num){
+	if (listOfPairs.size() >= num)
+	{
 		if (listOfPairs.at(num - 1)._IsComplete == 0){
 			listOfPairs.at(num - 1)._IsComplete = 1;
 		}
-		else {
-		listOfPairs.at(num - 1)._IsComplete = 0;
+		else{
+			listOfPairs.at(num - 1)._IsComplete = 0;
 		}
 		cout << "\n Your change to task \"" << num << ". "
 		<< listOfPairs.at(num - 1)._Task << "\" has been made...\n";
 	}
-	else {
+	else{
 		cout << "\n Your choice is out of the range of tasks\n";
 	}
 }
@@ -142,7 +150,8 @@ auto addListPair(vector<Task>& listOfPairs) {
 //void
 auto saveListOfPairs(string filename, vector<Task>& listOfPairs) {
 	ofstream outFILE(filename);
-	for (int i = 0; i < listOfPairs.size(); i++) {
+	for (int i = 0; i < listOfPairs.size(); i++) 
+	{
 		outFILE << listOfPairs.at(i)._IsComplete << '|' << listOfPairs.at(i)._Task;
 		if (i != (listOfPairs.size() - 1))
 			outFILE << '\n';
@@ -156,13 +165,15 @@ auto sortListOfPairs(vector<Task>& listOfPairs) {
 //void
 auto editMenu(vector<Task> & listOfPairs) {
 	bool loop = true;
-	while (loop) {
+	while (loop) 
+	{
 		char response{};
 		cout << "\n (T)oggle task status\n";
 		cout << " (D)elete a task\n";
 		cout << " (R)eturn to Main Menu\n\n -->";
 		cin >> response;
-		switch (response) {
+		switch (response) 
+		{
 		case 't':
 		case 'T': {
 			toggle(listOfPairs);
@@ -195,13 +206,15 @@ auto mainmenu(vector<Task> & listOfPairs,char** argv) {
 		int num{};
 		sortListOfPairs(listOfPairs);
 		clrPrint(listOfPairs);
+
 		cout << "\n Please choose from one of the following menu items\n";
 		cout << " (A)dd new Task\n";
 		cout << " (E)dit your List\n";
 		cout << " (S)ave and Quit\n\n -->";
 		cin >> menu;
 		cout << "\n";
-		switch (menu) {
+		switch (menu) 
+		{
 			case 'a':
 			case 'A': {
 				addListPair(listOfPairs);
@@ -214,7 +227,7 @@ auto mainmenu(vector<Task> & listOfPairs,char** argv) {
 					clrPrint(listOfPairs);
 					editMenu(listOfPairs);
 				}
-				else {
+				else{
 					cout << "\n Your list is empty, you may not edit\n";
 				}	
 				return true;
@@ -246,4 +259,3 @@ int main(int argc, char** argv) {
 		return 1;
 	}
 }
-//Todo
