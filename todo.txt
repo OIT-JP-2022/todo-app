@@ -1,4 +1,0 @@
-first,0
-second,1
-third,1
-fourth,0
