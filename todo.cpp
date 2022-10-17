@@ -76,7 +76,6 @@ void SaveFile(std::string filename, List &list) {
 
 const void PrintList(const List &list) {
     int i = 1;
-    
     std::cout << '\n';
     for(const auto &item : list)
         std::cout << std::setw(2) << ' ' << i++ << ". ["
@@ -92,7 +91,6 @@ const void PrintPrompt() {
         "5. Print list",
         "6. Exit"
     };
-
     for(auto &option : menuOptions)
         std::cout << option << '\n';
 }
@@ -101,36 +99,34 @@ bool SelectMenuOption(List &list) {
     int optionNumber = GetUserInputInt();
 
     switch(optionNumber) {
-    case 1: {
-        AddItem(list);
-        break;
-    }
-    case 2: {
-        DeleteItem(list);
-        break;
-    }
-
-    case 3: {
-        ToggleItem(list);
-        break;
-    }
-
-    case 4: {
-        SortList(list);
-        break;
-    }
-    case 5: {
-        PrintList(list);
-        break;
-    }
-    case 6: {
-        return false;
-        break;
-    }
-    default: {
-        std::cout << "Unknown option.\n";
-        break;
-    }
+    	case 1: {
+        	AddItem(list);
+	        break;
+    	}
+    	case 2: {
+        	DeleteItem(list);
+        	break;
+    	}
+    	case 3: {
+        	ToggleItem(list);
+        	break;
+    	}
+    	case 4: {
+        	SortList(list);
+        	break;
+    	}
+    	case 5: {
+        	PrintList(list);
+        	break;
+    	}
+    	case 6: {
+        	return false;
+        	break;
+    	}
+    	default: {
+        	std::cout << "Unknown option.\n";
+        	break;
+    	}
     }
     return true;
 }
@@ -204,7 +200,7 @@ int SelectTask(List &list) {
 }
 
 void SortList(List &list) {
-    std::sort(
+    std::qsort(
         list.begin(),
         list.end(),
         [](const Item &x, const Item &y) -> bool { return x.second < y.second; }
