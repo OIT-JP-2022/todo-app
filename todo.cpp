@@ -4,7 +4,6 @@
 
 using Lines = std::vector<std::string>;
 
-
 auto prompt(std::string action) {
   std::cout << "What do you want to do " << action << "?\n";
   std::string line{};
@@ -14,6 +13,11 @@ auto prompt(std::string action) {
 
 auto addTodo(Lines & todos, const std::string & todo) {
   todos.push_back(todo);
+}
+
+auto addSubTodo(Lines & todos, const std::string & subtodo, int index) {
+	int newIndex = index + 1;
+	todos.emplace(todos.begin()+newIndex, subtodo);
 }
 
 auto removeTodo(Lines & todos, int index) {
@@ -89,7 +93,9 @@ int main() {
   auto todos = readTodos(filename);
   print(todos);
  // while (run(todos)) {}
-  searchTodo(todos);
+ // searchTodo(todos);
+  addSubTodo(todos, "\ttest sub-string!", 1);
+  print(todos);
   writeTodos(todos, filename);
 }
 
