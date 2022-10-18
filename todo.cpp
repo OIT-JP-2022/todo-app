@@ -306,7 +306,6 @@ auto saveTasks(string filename, vector<Task>& tasks) {
 	ofstream outFILE(filename);
 	for (int i = 0; i < tasks.size(); i++) 
 	{
-		//outFILE << tasks.at(i)._IsComplete << '|' << tasks.at(i)._Task;
 		outFILE << tasks.at(i).saveTask();
 		if (i < (tasks.size() - 1))
 			outFILE << '\n';
