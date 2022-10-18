@@ -3,6 +3,7 @@
 #include <list>
 #include <fstream>
 #include <vector>
+#include <array>
 
 using namespace std;
 using std::string;
@@ -10,6 +11,31 @@ using std::cout;
 using std::endl;
 using std::ifstream;
 using std::vector;
+using std::array;
+
+
+int prompt(std::string msg, int max) {
+  int n;
+
+  while ( (n > max || n < 1) && n != -1) {
+    std::cout << msg << " ";
+    std::cin >> n;
+    std::cout << "\n";
+  }
+
+  return n;
+}
+
+
+int printMenu(std::array<std::string, 5> menuItems) {
+  for (const std::string & item : menuItems) {
+    std::cout << "\t" << item << "\n";
+  }
+
+  std::cout << "\n";
+  return prompt("Enter Choice: ", 5);
+}
+
 
 class toDo
 {
@@ -62,6 +88,7 @@ class toDoList
         {
                 for(auto & i: theList)
                         i.print();
+		cout << "\n";
         }
 
         void toDoAdder(toDo x) { theList.push_back(x);};        //This adds 'x' (toDo)  to our toDo list (theList)
@@ -87,11 +114,56 @@ class toDoList
   }
 };
 
+
+void handleOption(int n, toDoList & todo, string filename) {
+  string message;
+  std::vector<toDo> todos = todo.theList;
+
+  switch(n) {
+    case 1: {
+        std::cout << "\nEnter Message: ";
+        //std::cin >> message;
+        //std::cout << "\n";
+        //todos.(todos.begin(),{message,false});
+      break;
+    }
+
+    case 2: {
+        //const auto i {getItemNumber(todos)};
+        //todos.push_back({todos.at(i-1).first,true});
+        //todos.erase(todos.begin() + i-1);
+        break;
+    }
+      
+    case 3: {
+        //const auto i {getItemNumber(todos)};
+        //todos.insert(todos.begin(), {todos.at(i-1).first, false});
+        //todos.erase(todos.begin() + i);
+        break;
+    }
+      
+    case 4: {
+        //const auto i {getItemNumber(todos)};
+        //todos.erase(todos.begin() + i-1);
+        break;
+    }
+      
+    case 5: {
+        //saveTodos(todos, filename);
+        break;
+    }
+  }
+}
+
 int main(int argc, char** argv)
 {
         string argument = argv[1];
+	int menuOption {0};
         toDoList myList;
-        if(argument.compare( "-l") == 0)
+	
+	string filename{argc > 2 ? argv[2]:"default.txt"};
+        
+	if(argument.compare( "-l") == 0)
                 myList.loadList(argv[2]);
         else if(argument.compare("-h") == 0)
         {
@@ -115,13 +187,31 @@ int main(int argc, char** argv)
                      << "-h             Displays the program's manual\n"
                      << "-l             Loads a .txt file and displays its content\n";
         }
-        else
+	else
         {
                 cout<<"Usage: Loads or saves a todo list from a .txt document. EX: todo -l filename.txt \n";
-                return 0;
-        }
+        }//else if (argument.compare("-m") == 0)
+	//{i
+		std::array<std::string, 5> menuOptions = {
+			"1. Add",
+			"2. Mark Complete",
+			"3. Mark Incomplete",
+			"4. Delete",
+			"5. Save"
+	  	};
 
-        myList.printList();
+	//	if(argv[2] == NULL)
+	//		filename="default.txt";
+	
+		while (menuOption != -1) {
+	    		myList.printList();
+	
+	    		menuOption = printMenu(menuOptions);
+	
+    			handleOption(menuOption, myList, filename);
+		}
+	//}
+	
 }
 
 //myList.printList();
