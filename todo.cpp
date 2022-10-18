@@ -13,14 +13,16 @@ std::string filename;
 void printItems() 
 {
 	int i = 1;
+        
 
+	std::cout << "\n\n" << "//////////////////////////////////////////////" << "\n\n";
 	for (auto item : itemList) 
 	{
 		item.second == false ? std::cout << "\t[-] " : std::cout << "\t[+] ";
 		std::cout << i++ << ". " << item.first << "\n";
 	}
 
-	std::cout << "\n" << "//////////////////////////////////////////////" << "\n\n";
+	std::cout << "\n" << "//////////////////////////////////////////////" << "\n";
 }
 
 int inputMessage(std::string userMessage, int max_limit) 
@@ -43,17 +45,19 @@ int inputMessage(std::string userMessage, int max_limit)
 int printMenu() 
 {
 	int input=0;
-
+        
+	
+	std::cout << "//////////////////////////////////////////////" << "\n";
 	std::cout << "\tHello Todo List!\n";
 	std::cout << "Please select from the following items:\n\n";
 	std::cout << "\t1. (A)dd Item\n";
 	std::cout << "\t2. Mark Item (C)omplete\n";
 	std::cout << "\t3. Mark Item (I)ncomplete\n";
 	std::cout << "\t4. (D)elete Item\n";
-	std::cout << "\t5. (S)ave All\n\n";
+	std::cout << "\t5. (S)ave All\n";
 	
-	std::cout << "\t6. (H)Search Item\n\n";
-	std::cout << "//////////////////////////////////////////////" << "\n\n";
+	std::cout << "\t6. (H)Search Item\n";
+	std::cout << "//////////////////////////////////////////////" << "\n";
 
 	return inputMessage("Enter Selection: ", 6);
 }
@@ -131,7 +135,7 @@ int getItemNumber()
 void menuOptions(int menuSelection)
 {
 	std::string userInput;
-	int itemNum = NULL;
+	int itemNum;
 
 	switch (menuSelection)
 	{
