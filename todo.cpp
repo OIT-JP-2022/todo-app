@@ -113,8 +113,7 @@ public:
 				_SubTasks.erase(_SubTasks.begin() + num - 1);
 				break;
 			}
-			else
-			{
+			else {
 				cout << "Your number is outside of the range of tasks, try again\n -->";
 				cin >> num;
 			}
