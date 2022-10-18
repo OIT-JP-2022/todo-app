@@ -7,15 +7,21 @@
 #include <vector>
 #include <array>
 
-using ListItem = std::pair<std::pair<std::string, std::string>,bool>; 
+using ListItem = std::pair<std::pair<std::pair<std::string, std::vector<std::pair<std::string, bool>>>, std::string>,bool>; 
 
 void printItems(std::vector<ListItem> todos, std::string bar) {
   	int i {1};
   	std::cout << bar << "\n\n";
   	for (const auto [todo, isComplete] : todos) {
     		auto prefix{isComplete ? "\t[+] " : "\t[-] "};
-    		std::cout << prefix << i++ << ". " << todo.first.substr(0, todo.first.length() - 1) << " #" << todo.second << "\n";
-  	}
+    		std::cout << prefix << i++ << ". " << todo.first.first.substr(0, todo.first.first.length() - 1) << "\t#" << todo.second << "\n";
+  		if(todo.first.second.size() != 0){
+			int j {1};
+			for (const auto [subtask, subcomp] : todo.first.second){
+				std::cout << (subcomp ? "\t\t[+] " : "\t\t[-] ") << j++ << ". " << subtask << "\n";
+			}
+		}
+	}
   	std::cout << "\n" << bar << "\n\n";
 }
 
@@ -29,42 +35,71 @@ int prompt(std::string msg, int max) {	// this is only used once. If we get rid 
  	return n;
 }
 
-int printMenu(std::array<std::string, 7> menuItems) {
+int printMenu(std::array<std::string, 9> menuItems) {
   	for (const std::string & item : menuItems) {
     		std::cout << "\t" << item << "\n";
   	}
   	std::cout << "\n";
-  	return prompt("Enter Choice: ", 7);
+  	return prompt("Enter Choice: ", 9);
 }
 
-void loadTodos(std::vector<ListItem> todos, std::string filename) {
+std::vector<std::pair<std::string, bool>> loadSubTasks(std::string msg){
+	std::vector<std::pair<std::string, bool>> retvect;
+	while(msg.length() > 0){
+		retvect.push_back({msg.substr(2, msg.find("*") - 1), (msg[0] == '1')});
+		msg = msg.substr(msg.find("*") + 1);
+	}
+	return retvect;
+}
+
+void loadTodos(std::vector<ListItem> & todos, std::string filename) {
   	std::ifstream file {filename};
   	std::string msg;
   	while (getline(file, msg)) {
     		std::cout << msg << std::endl;
-    		todos.push_back({{msg.substr(2, msg.find("|")), msg.substr(msg.find("|"))}, (msg[0] == '1')});
+    		todos.push_back({{{msg.substr(2, msg.find("|") - 1), loadSubTasks(msg.substr(msg.find("$") + 1))}, msg.substr(msg.find("|") + 1, msg.find("$") - 1)}, (msg[0] == '1')});
   	}
 }
 
 void saveTodos(std::vector<ListItem> todos, std::string filename) {
   	std::ofstream file {filename};
   	for (const auto & [todo, isComplete] : todos) {
-    		file << (isComplete ? "1 " : "0 ") << todo.first << todo.second << "\n";
+    		file << (isComplete ? "1 " : "0 ") << todo.first.first << todo.second << "$";
+		for( const auto & [subtask, subcomplete] : todo.first.second){
+			file << (subcomplete ? "1 " : "0 ") << subtask << "*";
+		}
+		file << "\n";
   	}
+	
   	std::cout << "\nFile Successfully Saved.\n";
 }
 
-int getItemNumber(std::vector<ListItem> todos) { return prompt("Enter Item Number: ", todos.size()); }
+int getItemNumber(int size, std::string userprompt) { return prompt(userprompt, size); }
 
 std::string UpperCaseAndTrim(std::string str) { 
 	boost::algorithm::trim(str); 
 	boost::algorithm::to_upper(str);
-	return str; 
+	return str;
+}
+std::vector<std::pair<std::string, bool>> getSubtasks(){
+	std::string task;
+	std::vector<std::pair<std::string, bool>> retvect;
+	while (true){
+		std::cout <<"\nPlease Enter a Subtask (type \"stop\" to stop this prompt): ";
+		std::ws(std::cin);
+		std::getline(std::cin, task);
+		if(UpperCaseAndTrim(task) == "STOP")
+			break;	
+		retvect.push_back({task, false});
+
+	}
+	return retvect;
 }
 
 void handleOption(int n, std::vector<ListItem> & todos, std::string filename) {
 	const std::string bar = "=====================================================================";
 	std::string task;
+	std::string subtasks;
   	std::string hashtag;
   	switch(n) {
     		case 1: {	// Add Todo
@@ -74,22 +109,39 @@ void handleOption(int n, std::vector<ListItem> & todos, std::string filename) {
 			std::cout << "\nEnter Hashtag: #";
 			std::ws(std::cin);
 			std::getline(std::cin, hashtag);
-        		todos.insert(todos.begin(),{{task + "|", hashtag}, false});
+        		todos.insert(todos.begin(),{{{task + "|", getSubtasks()}, hashtag}, false});
       			break;
     		}
     		case 2: {	// Mark Complete
-        		const auto i {getItemNumber(todos)};
+        		const auto i {getItemNumber(todos.size(), "\nPlease Enter Task Number: ")};
 	        	todos.push_back({todos.at(i - 1).first, true});
     	    		todos.erase(todos.begin() + i - 1);
         		break;
     		}
-	    	case 3: {	// Mark Incomplete
-    	    		const auto i {getItemNumber(todos)};
+		case 3: {	//Mark Subtasks Complete
+			const auto i {getItemNumber(todos.size(), "\nPlease Enter Task Number: ")};
+			const auto j {getItemNumber(todos.at(i -1).first.first.second.size(), "\nPlease Enter Subtask Number: ")};
+			todos.at(i - 1).first.first.second.push_back({todos.at(i - 1).first.first.second.at(j - 1).first, true});
+			todos.at(i - 1).first.first.second.erase(todos.at(i - 1).first.first.second.begin() + j - 1);
+			break;
+			}
+
+
+	    	case 4: {	// Mark Incomplete
+    	    		const auto i {getItemNumber(todos.size(), "\nPlease Enter Task Number: " )};
         		todos.insert(todos.begin(), {todos.at(i - 1).first, false});
 	        	todos.erase(todos.begin() + i);
     	    		break;
     		}
-		case 4: {	// Search Hashtag
+		case 5: {	//Mark Subtask Incomplete
+			const auto i {getItemNumber(todos.size(), "\nPlease Enter Task Number: ")};
+			const auto j {getItemNumber(todos.at(i - 1).first.first.second.size(), "\nPlease Enter Subtask Number: ")};
+			todos.at(i - 1).first.first.second.insert(todos.at(i - 1).first.first.second.begin(), {todos.at(i - 1).first.first.second.at(j - 1).first, false});
+			todos.at(i - 1).first.first.second.erase(todos.at(i - 1).first.first.second.begin() + j);
+			break;
+		}
+
+		case 6: {	// Search Hashtag
 			std::cout << "\nEnter Hashtag: #";
 			std::ws(std::cin);
 			std::getline(std::cin, hashtag);
@@ -103,17 +155,17 @@ void handleOption(int n, std::vector<ListItem> & todos, std::string filename) {
 			printItems(results, bar);
 			break;
 		}
-    		case 5: {	// Delete Todo
-        		const auto i {getItemNumber(todos)};
+    		case 7: {	// Delete Todo
+        		const auto i {getItemNumber(todos.size(), "\nPlease Enter Task Number: ")};
    		    	todos.erase(todos.begin() + i - 1);
         		break;
     		} 
-    		case 6: {	// Save Todos
+    		case 8: {	// Save Todos
         		saveTodos(todos, filename);
         		break;
     		}
-    		case 7: {	// Exit
-        		exit(0);
+    		case 9: {	// Exit 
+	       		exit(0);
     		}
 		default: {
 			std::cout << "\nInvalid Choice.\n";
@@ -125,18 +177,19 @@ int main(int argc, char** argv) {
   	const std::string bar = "======================================================================";
   	std::vector<ListItem> todos;
   	int menuOption {0};
-  	std::string filename {argc > 1 ? argv[1] : "default.txt"};
-  	std::array<std::string, 7> menuOptions = {
+	std::string filename {argc > 1 ? argv[1] : "default.txt"};
+	loadTodos(todos, filename);       	
+  	std::array<std::string, 9> menuOptions = {
     		"1. Add todo",
-    		"2. Mark Complete",
-    		"3. Mark Incomplete",
-		"4. Search hashtag",
-    		"5. Delete",
-    		"6. Save",
-    		"7. Quit"
+    		"2. Mark Task Complete",
+		"3. Mark Subtask Complete",
+    		"4. Mark Incomplete",
+		"5. Mark Subtask Incomplete",
+		"6. Search hashtag",
+    		"7. Delete",
+    		"8. Save",
+    		"9. Quit"
   	};
-  	loadTodos(todos, filename);
-        printItems(todos, bar);	
   	while (menuOption != -1) {
 		printItems(todos, bar);
     		handleOption(printMenu(menuOptions), todos, filename);
