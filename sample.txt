@@ -1,7 +1,7 @@
 0|Plan our trip for next summer
 0|Water the plants
 1|Buy new shoes
-0|Feed the cat
+-0|Feed the cat
 1|Wash the cars
 0|Wash the dishes
 1|Do the laundry

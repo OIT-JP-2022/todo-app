@@ -113,12 +113,31 @@ public:
 				_SubTasks.erase(_SubTasks.begin() + num - 1);
 				break;
 			}
-			else {
+			else
+			{
 				cout << "Your number is outside of the range of tasks, try again\n -->";
 				cin >> num;
 			}
 		}
 	};
+	//returns task and subtasks as string to be saved
+	auto saveTask()
+	{
+		string outPut{};
+		if (_IsComplete == false)
+			outPut = outPut + "0" + '|' + _Task;
+		else
+			outPut = outPut + "1" + '|' + _Task;
+		for (int i = 0; i < _SubTasks.size(); i++)
+		{
+			outPut = outPut + '\n';
+			if (_SubTasks.at(i)._IsComplete == false)
+				outPut = outPut + "-0" + '|' + _SubTasks.at(i)._Task;
+			else
+				outPut = outPut + "-1" + '|' + _SubTasks.at(i)._Task;
+		}
+		return outPut;
+	}
 };
 //go through tasks vector and tell each member to print itself
 auto printTasks(vector<Task>& tasks) {
@@ -187,10 +206,19 @@ auto parseList(string filename, vector<Task>& tasks) {
 		cout << "Fetching data from "<< filename <<"...\n";
 		for(string line {}; getline(inFILE, buffer);)
 		{
-			complete = buffer.substr(0,1);	
-			task = buffer.substr(2, buffer.size()-2);
-			int num = stoi(complete);
-			tasks.emplace_back(static_cast<bool>(num),task);
+			if (buffer.substr(0, 1) == "-") {
+				complete = buffer.substr(1, 1);
+				task = buffer.substr(3, buffer.size() - 3);
+				int num = stoi(complete);
+
+				tasks.at(tasks.size() - 1).addSubTask({ static_cast<bool>(num), task });
+			}
+			else {
+				complete = buffer.substr(0, 1);
+				task = buffer.substr(2, buffer.size() - 2);
+				int num = stoi(complete);
+				tasks.emplace_back(static_cast<bool>(num), task);
+			}
 		}
 		return true;
 	}
@@ -274,9 +302,11 @@ auto saveTasks(string filename, vector<Task>& tasks) {
 	ofstream outFILE(filename);
 	for (int i = 0; i < tasks.size(); i++) 
 	{
-		outFILE << tasks.at(i)._IsComplete << '|' << tasks.at(i)._Task;
-		if (i != (tasks.size() - 1))
+		//outFILE << tasks.at(i)._IsComplete << '|' << tasks.at(i)._Task;
+		outFILE << tasks.at(i).saveTask();
+		if (i < (tasks.size() - 1))
 			outFILE << '\n';
+
 	}
 
 	cout << "\n Your file has been saved.  Have a nice day!\n\n\n\n";
