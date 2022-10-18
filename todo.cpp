@@ -5,6 +5,10 @@
 #include <utility>
 #include <algorithm>
 #include <list>
+#include <iostream>
+#include <vector>
+#include <string>
+
 
 using std::cout;
 using std::cin;
@@ -311,6 +315,24 @@ auto saveTasks(string filename, vector<Task>& tasks) {
 
 	cout << "\n Your file has been saved.  Have a nice day!\n\n\n\n";
 }
+
+auto locateItem(vector<Task> & tasks) {
+	cout << "\nLocate text\n#";
+	string buffer{};
+	cin.ignore();
+	getline(cin,buffer);
+	int taskLocation = 0;
+	for( auto & task:tasks)
+	{
+		if (task._Task.find(buffer) != std::string::npos)
+			break;
+			
+		taskLocation++;
+	}
+	cout << "Found at task " << taskLocation + 1 << " "; tasks.at(taskLocation).print();
+
+}
+
 //Menu to edit list:toggle, delete, add sub task
 auto editMenu(vector<Task> & tasks) {
 	if (!tasks.empty()) {
@@ -369,6 +391,7 @@ auto mainmenu(vector<Task> & tasks,char** argv) {
 		cout << "\n Please choose from one of the following menu items\n";
 		cout << " (A)dd new Task\n";
 		cout << " (E)dit your List\n";
+		cout << " (L)ocate list item\n";
 		cout << " (S)ave and Quit\n\n -->";
 		cin >> menu;
 		cout << "\n";
@@ -387,6 +410,12 @@ auto mainmenu(vector<Task> & tasks,char** argv) {
 				return true;
 				break;
 			}
+			case 'l':
+		 	case 'L':{
+				 locateItem(tasks);
+ 				 return true;
+				 break;
+				 }
 			case 's':
 			case 'S': {
 				saveTasks(argv[1], tasks);
