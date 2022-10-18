@@ -1,0 +1,15 @@
+Plan our trip for next summer0
+Buy new shoes0
+Go to the store0
+This is the new add0
+Water the plants1
+	refill bucket1
+	dust leaves1
+Feed the cat0
+	add water to bowl0
+This housework0
+	this thing1
+	the other thing0
+Wash the cars0
+	clean the dirty rags0
+Go to the bank1
