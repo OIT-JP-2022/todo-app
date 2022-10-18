@@ -5,6 +5,7 @@
 #include <utility>
 #include <algorithm>
 #include <list>
+
 using std::cout;
 using std::cin;
 using std::endl;
@@ -17,10 +18,12 @@ using std::vector;
 using std::pair;
 using std::list;
 
+
  class Task {
 
-    private:
+   private:
 	vector<Task> _SubTasks;
+
 
 	public:
 	bool _IsComplete;
@@ -31,15 +34,86 @@ using std::list;
 	     _IsComplete = Complete; 
 	    _Task = task;
 	};
-//	AddSubTask(Task)
-//	{
-	
-//	_SubTasks.push_back(Task);
-	
-//	}
-
+	auto printSub(){ 
+		int i{};
+		cout << "-Incomplete: \n";
+		int size = _SubTasks.size();
+		for (i = 0; i < size && _SubTasks.at(i)._IsComplete == 0; i++)
+		{
+				cout << "-"<< i + 1<< ". " << _SubTasks.at(i)._Task << '\n';
+		}
+		if (i != size)
+			cout << "\n-Complete: " << "\n";
+		for (i = i; i < size; i++)
+		{
+				cout << "-"<< i + 1<< ". " << _SubTasks.at(i)._Task << '\n';
+		}
+	}; 
+	auto print(){ 
+		cout << _Task << '\n';
+		if (_SubTasks.size() > 0){
+			cout << "Sub tasks:\n";
+		       printSub();	
+		}
+	}; 
+	auto addSubTask(Task task)
+	{	
+		_SubTasks.push_back(task);	
+	};
 };
+auto sortListOfPairs(vector<Task>& listOfPairs) {
+	sort(listOfPairs.begin(), listOfPairs.end(),
+		[](const auto& x, const auto& y) { return x._IsComplete < y._IsComplete; });
+};
+auto printTasks(vector<Task>& listOfPairs) {
+		int i{};
+		cout << "Incomplete: \n";
+		int size = listOfPairs.size();
+		for (i = 0; i < size && listOfPairs.at(i)._IsComplete == 0; i++)
+		{
+				cout << i + 1<< ". ";
+				listOfPairs.at(i).print();
+		}
 
+		if (i != size)
+			cout << "\nComplete: \n";
+		for (i = i; i < size; i++)
+		{
+				cout << i + 1<< ". ";
+				listOfPairs.at(i).print();
+		}
+	}
+	auto clrPrint(vector<Task>& listOfPairs) {
+		cout << "\n\n\n	===Your ToDo list!===\n\n";
+		if(!listOfPairs.empty()) {
+			sortListOfPairs(listOfPairs);
+			printTasks(listOfPairs);
+		}
+		else
+		{
+			cout << "\n You have no items in your list at the moment!";
+			cout << "\n\n     ===> Editing is disabled <===\n\n";
+		}
+	}
+//void
+auto addSubTask(vector<Task>& listOfPairs){
+	while(1){
+		cout << "what task number would you like to add a subtask to?";
+		string num{};
+		cin.ignore();
+		getline(cin, num);
+		string task;
+		cout << "Enter task: ";
+		getline(cin,task);
+		Task Task(0,task);
+		if(stoi(num) <= listOfPairs.size()){
+			listOfPairs.at(stoi(num) - 1).addSubTask(Task); 
+			break;
+		}	
+		else
+			cout<<"Outside of Range!\n";
+	}
+}
 
 
 //Bool
@@ -65,36 +139,8 @@ auto parseList(string filename, vector<Task>& listOfPairs) {
 	}
 	else return false;
 }
-//void
-auto printListOfPairs(vector<Task>& listOfPairs) {
-	int i{};
-	cout << "Incomplete: \n";
-	int size = listOfPairs.size();
-	for (i = 0; i < size; i++)
-	{
-		if(listOfPairs.at(i)._IsComplete == 0) {
-			cout << i + 1<< ". " << listOfPairs.at(i)._Task<< '\n'; 
-		}
-	}
-	cout << "\nComplete: \n";
-	for (i = 0; i < size; i++)
-	{
-		if(listOfPairs.at(i)._IsComplete == 1) {
-			cout << i + 1 << ". " << listOfPairs.at(i)._Task<< '\n';
-		}
-	}
-}
-//void
-auto clrPrint(vector<Task>& listOfPairs) {
-	cout << "\n\n\n	===Your ToDo list!===\n\n";
-	if(!listOfPairs.empty())
-		printListOfPairs(listOfPairs);
-	else
-	{
-		cout << "\n You have no items in your list at the moment!";
-		cout << "\n\n     ===> Editing is disabled <===\n\n";
-	}
-}
+
+
 //void
 auto deleteTask(vector<Task> & listOfPairs) {
 	int num{};
@@ -119,7 +165,7 @@ auto deleteTask(vector<Task> & listOfPairs) {
 //void
 auto toggle(vector<Task>& listOfPairs) {
 	int num{};
-	clrPrint(listOfPairs);
+	clrPrint(listOfPairs);	
 	cout << "\n Please enter the line number of the task you wish to toggle\n -->";
 	cin >> num;
 	if (listOfPairs.size() >= num)
@@ -157,18 +203,16 @@ auto saveListOfPairs(string filename, vector<Task>& listOfPairs) {
 			outFILE << '\n';
 	}
 }
-//void
-auto sortListOfPairs(vector<Task>& listOfPairs) {
-	sort(listOfPairs.begin(), listOfPairs.end(),
-		[](const auto& x, const auto& y) { return x._IsComplete < y._IsComplete; });
-}
+
 //void
 auto editMenu(vector<Task> & listOfPairs) {
 	bool loop = true;
+	
 	while (loop) 
 	{
 		char response{};
 		cout << "\n (T)oggle task status\n";
+		cout << " (A)dd SubTask\n";
 		cout << " (D)elete a task\n";
 		cout << " (R)eturn to Main Menu\n\n -->";
 		cin >> response;
@@ -177,8 +221,7 @@ auto editMenu(vector<Task> & listOfPairs) {
 		case 't':
 		case 'T': {
 			toggle(listOfPairs);
-			sortListOfPairs(listOfPairs);
-			clrPrint(listOfPairs);
+			clrPrint(listOfPairs);	
 			break;
 		}
 		case 'r':
@@ -192,7 +235,12 @@ auto editMenu(vector<Task> & listOfPairs) {
 			clrPrint(listOfPairs);
 			break;
 		}
-		//(a)	  
+		case 'a':
+		case 'A': { 
+			addSubTask(listOfPairs);
+			clrPrint(listOfPairs);
+			break;
+		}  
 		default: {
 			cout << " Menu item not understood, please try again.\n\n";
 			break;
@@ -204,7 +252,6 @@ auto editMenu(vector<Task> & listOfPairs) {
 auto mainmenu(vector<Task> & listOfPairs,char** argv) {
 	char menu{};
 		int num{};
-		sortListOfPairs(listOfPairs);
 		clrPrint(listOfPairs);
 
 		cout << "\n Please choose from one of the following menu items\n";
@@ -224,7 +271,7 @@ auto mainmenu(vector<Task> & listOfPairs,char** argv) {
 			case 'e':
 			case 'E': {
 				if(!listOfPairs.empty()){
-					clrPrint(listOfPairs);
+					clrPrint(listOfPairs);	
 					editMenu(listOfPairs);
 				}
 				else{
