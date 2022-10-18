@@ -26,13 +26,14 @@ void printItems(std::vector<ListItem> todos, std::string bar) {
 }
 
 int prompt(std::string msg, int max) {	// this is only used once. If we get rid of this, we can handle it in the switch with the default case
-  	int n;
-  	while ( (n > max || n < 1) && n != -1) {
-    		std::cout << msg << " ";
+	std::string n;
+  	while ( (stoi(n) > max || stoi(n) < 1) && n != -1) {
+    		std::cout << msg;
     		std::cin >> n;
+		n = n.substr(0, 1);
     		std::cout << "\n";
   	}
- 	return n;
+ 	return stoi(n);
 }
 
 int printMenu(std::array<std::string, 9> menuItems) {
@@ -46,7 +47,7 @@ int printMenu(std::array<std::string, 9> menuItems) {
 std::vector<std::pair<std::string, bool>> loadSubTasks(std::string msg){
 	std::vector<std::pair<std::string, bool>> retvect;
 	while(msg.length() > 0){
-		retvect.push_back({msg.substr(2, msg.find("*") - 1), (msg[0] == '1')});
+		retvect.push_back({msg.substr(2, msg.find("*") - 2), (msg[0] == '1')});
 		msg = msg.substr(msg.find("*") + 1);
 	}
 	return retvect;
@@ -56,8 +57,7 @@ void loadTodos(std::vector<ListItem> & todos, std::string filename) {
   	std::ifstream file {filename};
   	std::string msg;
   	while (getline(file, msg)) {
-    		std::cout << msg << std::endl;
-    		todos.push_back({{{msg.substr(2, msg.find("|") - 1), loadSubTasks(msg.substr(msg.find("$") + 1))}, msg.substr(msg.find("|") + 1, msg.find("$") - 1)}, (msg[0] == '1')});
+    		todos.push_back({{{msg.substr(2, msg.find("|") - 1), loadSubTasks(msg.substr(msg.find("$") + 1))}, msg.substr(msg.find("|") + 1, msg.find("$") - msg.find("|") - 1)}, (msg[0] == '1')});
   	}
 }
 
@@ -81,6 +81,7 @@ std::string UpperCaseAndTrim(std::string str) {
 	boost::algorithm::to_upper(str);
 	return str;
 }
+
 std::vector<std::pair<std::string, bool>> getSubtasks(){
 	std::string task;
 	std::vector<std::pair<std::string, bool>> retvect;
@@ -180,13 +181,13 @@ int main(int argc, char** argv) {
 	std::string filename {argc > 1 ? argv[1] : "default.txt"};
 	loadTodos(todos, filename);       	
   	std::array<std::string, 9> menuOptions = {
-    		"1. Add todo",
+    		"1. Add Task",
     		"2. Mark Task Complete",
 		"3. Mark Subtask Complete",
     		"4. Mark Incomplete",
 		"5. Mark Subtask Incomplete",
-		"6. Search hashtag",
-    		"7. Delete",
+		"6. Search Hashtag",
+    		"7. Delete Task",
     		"8. Save",
     		"9. Quit"
   	};
