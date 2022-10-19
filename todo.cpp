@@ -65,6 +65,7 @@ class toDo
 
     void print()
     {
+      cout << "\n";
       printIndent();
       cout << "Description: " << description << "\n";
       printIndent();
@@ -117,11 +118,32 @@ class toDoList
 
 void handleOption(int n, toDoList & todo, string filename) {
   string message;
-  std::vector<toDo> todos = todo.theList;
-
+  vector<toDo> * todos = &todo.theList;
+  
   switch(n) {
     case 1: {
-      std::cout << "\nEnter Message: ";
+      cout << "Parent? (y/n): ";
+      cin >> message; 
+      if (message == "y") {
+          int index;
+          cout << "\nEnter Index: ";
+          cin >> index; 
+          toDo t = todos->at(index);
+
+          cout << "\nEnter Message: ";
+          cin >> message;
+
+          todos->insert(todos->begin() + index + 1, toDo{0, t.indentation+1, message});
+      }
+
+      else {
+        cout << "\nEnter Message: ";
+        cin >> message;
+        
+        todos->emplace_back(toDo{0, 0, message});
+      }
+
+      //std::cout << "\nEnter Message: ";
       //std::cin >> message;
       //std::cout << "\n";
       //todos.(todos.begin(),{message,false});
