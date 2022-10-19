@@ -1,0 +1,5 @@
+0 Apply for jobs|job`0 Apple*0 Amazon*0 Google*0 Twitter*0 Netflix*0 Meta*0 Intel*0 Microsoft*
+0 Do chores|chores`0 Wash car*0 Vaccum*0 Laundry*
+0 PHY Homework|school`0 PHY 221*
+0 WRI Homework|school`0 WRI 227*0 WRI 350*
+0 CST Homework|school`0 CST 229*0 CST 316*0 CST 324*

@@ -1,8 +1,5 @@
-# todo-app
+Todo App
+Branch: NathanAndAntonio
+by Antonio and Nathan
 
-A simple TUI todo app.
-
-To compile, run: `make todo`
-
-Be sure to have your compiler (LLVM) set to the latest C++ version, and be sure that "make" is calling LLVM and not GCC.
-
+Must install linux package with command "sudo apt-get install libboost-all-dev" before running
