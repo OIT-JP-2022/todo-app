@@ -20,8 +20,8 @@ auto getLists(const std::string & folderName) {
 }
 
 // Add new list
-auto addList(Lines & lists, const std::string & input) {
-  std::ofstream newFile("testDir/" + input + ".txt");
+auto addList(Lines & lists, const std::string & input, std::string folderName) {
+  std::ofstream newFile(folderName + "/" + input + ".txt");
   newFile.close();
   lists.push_back(input + ".txt");
 }
@@ -32,13 +32,11 @@ auto addTodo(Lines & todos, const std::string & todo) {
 }
 
 // Delete file/list
-auto removeList(Lines & lists, int index) {
+auto removeList(Lines & lists, int index, std::string folderName) {
   std::string file = lists[index];
   lists.erase(lists.begin()+index);
-  std::filesystem::remove("testDir/" + file);
+  std::filesystem::remove(folderName + "/" + file);
 }
-
-//mnt/c/Users/blued/source/CST316LinuxStuff/todo-app/
 
 // Delete todo item
 auto removeTodo(Lines & todos, int index) {
@@ -66,10 +64,10 @@ auto print(Lines & todos) {
 }
 
 // Read todo list from file
-auto readTodos(const std::string & filename) {
+auto readTodos(const std::string & filename, std::string folderName) {
   std::vector<std::string> todos{};
 
-  std::ifstream input{filename};
+  std::ifstream input{folderName + "/" + filename};
   for (std::string line{}; std::getline(input, line); ) {
     addTodo(todos, line);
   }
@@ -78,8 +76,8 @@ auto readTodos(const std::string & filename) {
 }
 
 // Write todo list to file
-auto writeTodos(const Lines & todos, const std::string & folderName) {
-  std::ofstream output{folderName};
+auto writeTodos(const Lines & todos, const std::string & fileName, std::string folderName) {
+  std::ofstream output{folderName + "/" + fileName};
 
   for (auto todo : todos) {
     output << todo << '\n';
@@ -87,14 +85,15 @@ auto writeTodos(const Lines & todos, const std::string & folderName) {
 }
 
 // Sub list screen menu
-auto listPrompt() {	
+auto listPrompt(Lines & todos) {	
   std::cout << "\n\t-------------";
   std::cout << "\n\t  List Menu";
-  std::cout << "\n\t--------------\n";
-  std::cout << "1) Add new item" << '\n';
-  std::cout << "2) Delete item" << '\n';
-  std::cout << "3) Edit item" << '\n';
-  std::cout << "4) Close list" << '\n';
+  std::cout << "\n\t-------------\n";
+  print(todos);
+  std::cout << "\n\t1) Add new item" << '\n';
+  std::cout << "\t2) Delete item" << '\n';
+  std::cout << "\t3) Edit item" << '\n';
+  std::cout << "\t4) Close list" << '\n';
   std::cout << "\n\n\t~ Menu choice: ";
   int choice{};
   std::cin >> choice;
@@ -102,17 +101,17 @@ auto listPrompt() {
 }
 
 // Process list menu item
-auto runList(Lines & todos) {
+auto runList(Lines & todos, std::string folderName) {
   print(todos);
 
-  auto option = listPrompt();
+  auto option = listPrompt(todos);
   switch(option) {
 	case 1: {
 	  std::cout << "\t~ New item to add: ";
 	  std::string input{};
 	  std::cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
 	  std::getline(std::cin, input);
-          addTodo(todos,input);
+      addTodo(todos,input);
 	  break;
 	  }
 	case 2: {
@@ -157,9 +156,7 @@ auto mainPrompt(Lines & lists) {
 }
 
 // Process main menu item
-auto runMain(Lines & lists) {
-
-
+auto runMain(Lines & lists, std::string folderName) {
   auto option = mainPrompt(lists);
   switch(option) {
 	case 1: {
@@ -167,15 +164,14 @@ auto runMain(Lines & lists) {
 	  std::string input{};
 	  std::cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
 	  std::getline(std::cin, input);
-	  addList(lists, input);
+	  addList(lists, input, folderName);
 	  break;
 	  }
 	case 2: {
-	  //TODO: create remove list function
 	  int choice{};
 	  std::cout << "\t~ Enter list# to delete: ";
 	  std::cin >> choice;
-	  removeList(lists,choice - 1);
+	  removeList(lists,choice - 1, folderName);
 	  break;
 	  }
 	case 3: {
@@ -183,22 +179,21 @@ auto runMain(Lines & lists) {
 	  std::cout << "\t~ Enter item# to edit: ";
 	  std::cin >> choice;
 	  std::string todoFile {lists[choice - 1]};
-	  auto todos = readTodos(todoFile);
-	  while(runList(todos)) {}
+	  auto todos = readTodos(todoFile, folderName);
+	  while(runList(todos, folderName)) {}
+	  writeTodos(todos, todoFile, folderName);
 	  break;
 	  }
-
 	default: return false;
   }
-
   return true;
 }
 
-int main() {
-  std::string folderName{"testDir"};
-  auto lists = getLists(folderName);
-  
-  print(lists);
+int main(int argc, char** argv) {
+  std::string folderName{argv[1]};
+  auto lists = getLists(folderName); 
 
-  while (runMain(lists)) {}
+  while (runMain(lists, folderName)) {}
+
+  std::cout << "\n\t\t ~ Goodbye! ~\n\n";
 }
