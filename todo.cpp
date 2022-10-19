@@ -107,8 +107,8 @@ class toDoList
     void save(string filename) {
       ofstream file {filename};
 
-      for (const auto & [completedness, indentation, msg] : theList) {
-        file << completedness << " " << indentation << " " << msg << "\n";
+      for (const auto & item : theList) {
+        file << item.completeness << " " << item.indentation << " " << item.description << "\n";
       }
 
       cout << "\nFile saved.\n";
@@ -171,7 +171,9 @@ void handleOption(int n, toDoList & todo, string filename) {
     }
 
     case 5: {
-      //saveTodos(todos, filename);
+      cout << "\nEnter filename: ";
+      cin >> message;
+      todo.save(message);
       break;
     }
   }
